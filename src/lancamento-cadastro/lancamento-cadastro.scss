@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep {
+  .p-datepicker,
+  .p-select,
+  .p-inputnumber,
+  .p-inputtext,
+  .p-textarea {
+    width: 100% !important;
+  }
+}

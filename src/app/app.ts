@@ -1,17 +1,13 @@
-import { Component, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { LancamentosPesquisa } from '../lancamentos-pesquisa/lancamentos-pesquisa';
+import { Component } from '@angular/core';
 import { Navbar } from '../navbar/navbar';
-import { PessoasPesquisa } from '../pessoas-pesquisa/pessoas-pesquisa';
+import { LancamentoCadastro } from '../lancamento-cadastro/lancamento-cadastro';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    LancamentosPesquisa,
-    TableModule,
     Navbar,
-    PessoasPesquisa
+    LancamentoCadastro
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

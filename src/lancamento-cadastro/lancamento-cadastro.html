@@ -1,0 +1,147 @@
+<div class="container py-4">
+  <div class="surface-card p-4 shadow-1 border-round">
+    
+    <!-- Cabeçalho -->
+    <div class="mb-4">
+      <h1 class="text-3xl font-bold text-900 m-0">Novo Lançamento</h1>
+      <span class="text-500 text-sm">Preencha os dados do lançamento financeiro</span>
+    </div>
+
+    <form (ngSubmit)="salvar()">
+      <p-fluid>
+        <div class="grid formgrid">
+          
+          <!-- Tipo: Receita ou Despesa -->
+          <div class="field col-12 mb-3">
+            <p-selectButton 
+              [options]="tipos" 
+              [(ngModel)]="lancamento().tipo" 
+              name="tipo"
+              optionLabel="label" 
+              optionValue="value"
+            ></p-selectButton>
+          </div>
+
+          <!-- Vencimento -->
+          <div class="field col-12 md:col-3">
+            <label for="vencimento" class="font-semibold text-700 block mb-2">Vencimento</label>
+            <p-datepicker 
+              id="vencimento"
+              [(ngModel)]="lancamento().dataVencimento" 
+              name="vencimento" 
+              dateFormat="dd/mm/yy" 
+              [showIcon]="true"
+              placeholder="dd/mm/aaaa"
+              class="w-full"
+              styleClass="w-full"
+            ></p-datepicker>
+          </div>
+
+          <!-- Pagamento / Recebimento -->
+          <div class="field col-12 md:col-3">
+            <label for="pagamento" class="font-semibold text-700 block mb-2">
+              {{ lancamento().tipo === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}
+            </label>
+            <p-datepicker 
+              id="pagamento"
+              [(ngModel)]="lancamento().dataPagamento" 
+              name="pagamento" 
+              dateFormat="dd/mm/yy" 
+              [showIcon]="true"
+              placeholder="dd/mm/aaaa"
+              class="w-full"
+              styleClass="w-full"
+            ></p-datepicker>
+          </div>
+
+          <!-- Espaço em branco no desktop para empurrar Descrição para a próxima linha ou alinhar grid -->
+          <div class="hidden md:block md:col-6"></div>
+
+          <!-- Descrição -->
+          <div class="field col-12 md:col-9">
+            <label for="descricao" class="font-semibold text-700 block mb-2">Descrição</label>
+            <input 
+              id="descricao" 
+              pInputText 
+              type="text" 
+              [(ngModel)]="lancamento().descricao" 
+              name="descricao" 
+              placeholder="Ex: Mensalidade da escola"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Valor -->
+          <div class="field col-12 md:col-3">
+            <label for="valor" class="font-semibold text-700 block mb-2">Valor</label>
+            <p-inputNumber 
+              id="valor"
+              [(ngModel)]="lancamento().valor" 
+              name="valor" 
+              mode="currency" 
+              currency="BRL" 
+              locale="pt-BR" 
+              placeholder="R$ 0,00"
+              class="w-full"
+              styleClass="w-full"
+            ></p-inputNumber>
+          </div>
+
+          <!-- Categoria -->
+          <div class="field col-12 md:col-6">
+            <label for="categoria" class="font-semibold text-700 block mb-2">Categoria</label>
+            <p-select 
+              id="categoria"
+              [options]="categorias" 
+              [(ngModel)]="lancamento().categoriaId" 
+              name="categoria" 
+              optionLabel="label" 
+              optionValue="value" 
+              placeholder="Selecione uma categoria"
+              class="w-full"
+              styleClass="w-full"
+            ></p-select>
+          </div>
+
+          <!-- Pessoa -->
+          <div class="field col-12 md:col-6">
+            <label for="pessoa" class="font-semibold text-700 block mb-2">Pessoa</label>
+            <p-select 
+              id="pessoa"
+              [options]="pessoas" 
+              [(ngModel)]="lancamento().pessoaId" 
+              name="pessoa" 
+              optionLabel="label" 
+              optionValue="value" 
+              placeholder="Selecione uma pessoa"
+              class="w-full"
+              styleClass="w-full"
+            ></p-select>
+          </div>
+
+          <!-- Observação -->
+          <div class="field col-12">
+            <label for="observacao" class="font-semibold text-700 block mb-2">Observação</label>
+            <textarea 
+              id="observacao"
+              pTextarea 
+              [(ngModel)]="lancamento().observacao" 
+              name="observacao" 
+              rows="3" 
+              placeholder="Observações adicionais sobre o lançamento..."
+              class="w-full"
+            ></textarea>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="col-12 mt-3 flex flex-wrap gap-2">
+            <button pButton type="submit" label="Salvar" icon="pi pi-check"></button>
+            <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info" (click)="novo()"></button>
+            <button pButton type="button" label="Voltar" icon="pi pi-arrow-left" class="p-button-secondary" (click)="voltar()"></button>
+          </div>
+
+        </div>
+      </p-fluid>
+    </form>
+  </div>
+</div>
