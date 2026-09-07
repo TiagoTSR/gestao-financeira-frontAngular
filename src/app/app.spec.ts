@@ -8,16 +8,17 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  it('deve criar a aplicação', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('deve renderizar o componente lancamentos-pesquisa', async () => {
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, gestao-financeira-frontAngular');
+    expect(compiled.querySelector('app-lancamentos-pesquisa')).toBeTruthy();
   });
 });
