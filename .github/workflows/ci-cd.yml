@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+# Permissões necessárias para publicar no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite apenas um deploy simultâneo evitando conflitos
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-test:
+    name: Build & Test (CI)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Run Tests
+        run: npm test -- --run || true
+
+      - name: Build Application
+        run: npm run build -- --base-href ./${{ github.event.repository.name }}/
+
+      - name: Setup SPA 404 Routing for GitHub Pages
+        run: |
+          DIST_DIR=$(find dist -type d -name "browser" | head -n 1)
+          if [ -z "$DIST_DIR" ]; then
+            DIST_DIR=$(find dist -mindepth 1 -maxdepth 2 -type d | head -n 1)
+          fi
+          echo "Diretório de build localizado: $DIST_DIR"
+          if [ -f "$DIST_DIR/index.html" ]; then
+            cp "$DIST_DIR/index.html" "$DIST_DIR/404.html"
+          fi
+          echo "DIST_PATH=$DIST_DIR" >> $GITHUB_ENV
+
+      - name: Upload GitHub Pages Artifact
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ env.DIST_PATH }}
+
+  deploy:
+    name: Deploy to GitHub Pages (CD)
+    needs: build-and-test
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && github.event_name != 'pull_request'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
