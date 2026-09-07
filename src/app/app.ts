@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { LancamentosPesquisa } from '../lancamentos-pesquisa/lancamentos-pesquisa';
 import { Navbar } from '../navbar/navbar';
+import { PessoasPesquisa } from '../pessoas-pesquisa/pessoas-pesquisa';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,8 @@ import { Navbar } from '../navbar/navbar';
   imports: [
     LancamentosPesquisa,
     TableModule,
-    Navbar
+    Navbar,
+    PessoasPesquisa
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

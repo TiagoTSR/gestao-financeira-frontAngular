@@ -1,0 +1,100 @@
+<div class="container py-4">
+  <div class="surface-card p-4 shadow-1 border-round">
+
+    <!-- Cabeçalho da Página -->
+    <div class="mb-4">
+      <h1 class="text-3xl font-bold text-900 m-0">Pessoas</h1>
+      <span class="text-500 text-sm">Pesquise e gerencie o cadastro de pessoas</span>
+    </div>
+
+    <!-- Formulário de Pesquisa -->
+    <form (ngSubmit)="pesquisar()" class="grid formgrid p-fluid">
+      <div class="field col-12">
+        <label for="nome" class="font-semibold text-700 block mb-2">Nome</label>
+        <input 
+          id="nome" 
+          pInputText 
+          type="text" 
+          [ngModel]="nomeFiltro()" 
+          (ngModelChange)="nomeFiltro.set($event)" 
+          name="nome" 
+          placeholder="Digite o nome da pessoa para pesquisar..."
+        />
+      </div>
+
+      <div class="col-12 mt-2 flex flex-wrap gap-2">
+        <button pButton type="submit" label="Pesquisar" icon="pi pi-search"></button>
+        <button pButton type="button" label="Nova Pessoa" icon="pi pi-plus" class="p-button-success"></button>
+      </div>
+    </form>
+
+    <!-- Tabela de Dados -->
+    <div class="mt-4">
+      <p-table 
+        [value]="pessoas()" 
+        [paginator]="true" 
+        [rows]="5" 
+        [rowsPerPageOptions]="[5, 10, 20]"
+        responsiveLayout="scroll"
+        styleClass="p-datatable-striped p-datatable-gridlines"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nome</th>
+            <th>Cidade</th>
+            <th class="text-center" style="width: 120px">Estado</th>
+            <th class="text-center" style="width: 130px">Status</th>
+            <th class="text-center" style="width: 110px">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-pessoa>
+          <tr>
+            <td>{{ pessoa.nome }}</td>
+            <td>{{ pessoa.cidade }}</td>
+            <td class="text-center">{{ pessoa.estado }}</td>
+            <td class="text-center">
+              <a 
+                href="javascript:;" 
+                (click)="alternarStatus(pessoa)" 
+                [class.status-ativo]="pessoa.ativo" 
+                [class.status-inativo]="!pessoa.ativo"
+                [pTooltip]="pessoa.ativo ? 'Clique para desativar' : 'Clique para ativar'"
+                tooltipPosition="top"
+              >
+                {{ pessoa.ativo ? 'Ativo' : 'Inativo' }}
+              </a>
+            </td>
+            <td class="text-center">
+              <div class="flex justify-content-center gap-1">
+                <button 
+                  pButton 
+                  icon="pi pi-pencil" 
+                  class="p-button-text p-button-rounded p-button-sm" 
+                  pTooltip="Editar"
+                  tooltipPosition="top"
+                ></button>
+                <button 
+                  pButton 
+                  icon="pi pi-trash" 
+                  class="p-button-text p-button-rounded p-button-danger p-button-sm" 
+                  pTooltip="Excluir"
+                  tooltipPosition="top"
+                ></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="text-center p-4 text-500 font-medium">
+              Nenhuma pessoa encontrada.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+  </div>
+</div>
