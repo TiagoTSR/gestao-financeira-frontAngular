@@ -14,11 +14,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('deve renderizar o componente lancamentos-pesquisa', async () => {
+  it('deve renderizar os componentes navbar e lancamentos-pesquisa', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-navbar')).toBeTruthy();
     expect(compiled.querySelector('app-lancamentos-pesquisa')).toBeTruthy();
   });
 });

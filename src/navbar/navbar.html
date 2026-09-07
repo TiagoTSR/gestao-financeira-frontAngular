@@ -1,0 +1,70 @@
+<nav class="navbar">
+  <div class="container flex align-items-center justify-content-between">
+    
+    <!-- Lado Esquerdo: Toggle e Logo -->
+    <div class="flex align-items-center gap-3">
+      <button 
+        type="button" 
+        class="navbar-toggle" 
+        (click)="alternarMenu()" 
+        aria-label="Alternar menu de navegação"
+      >
+        <i class="pi pi-bars text-xl"></i>
+      </button>
+
+      <div class="navbar-brand flex align-items-center gap-2">
+        <i class="pi pi-wallet text-2xl text-white"></i>
+        <span class="font-bold text-xl text-white">Gestão Financeira</span>
+      </div>
+    </div>
+
+    <!-- Lado Direito: Nome do Usuário no Desktop -->
+    <div class="hidden md:flex align-items-center gap-2 text-white">
+      <i class="pi pi-user text-lg"></i>
+      <span class="font-medium text-sm">{{ usuarioLogado() }}</span>
+    </div>
+
+  </div>
+
+  <!-- Backdrop Escuro (fecha ao clicar fora) -->
+  @if (exibindoMenu()) {
+    <div class="navbar-backdrop" (click)="fecharMenu()"></div>
+  }
+
+  <!-- Gaveta Lateral do Menu -->
+  <aside class="navbar-menu" [class.navbar-menu-aberto]="exibindoMenu()">
+    
+    <!-- Cabeçalho do Menu com Usuário e Botão de Fechar -->
+    <div class="navbar-usuario flex align-items-center justify-content-between">
+      <div class="flex align-items-center gap-2">
+        <i class="pi pi-user"></i>
+        <span>{{ usuarioLogado() }}</span>
+      </div>
+      <button type="button" class="btn-fechar" (click)="fecharMenu()" aria-label="Fechar menu">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <!-- Itens de Navegação -->
+    <ul class="navbar-menu-items">
+      <li>
+        <a href="#" (click)="fecharMenu()">
+          <i class="pi pi-money-bill"></i>
+          <span>Lançamentos</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" (click)="fecharMenu()">
+          <i class="pi pi-users"></i>
+          <span>Pessoas</span>
+        </a>
+      </li>
+      <li class="item-logout">
+        <a href="#" (click)="fecharMenu()">
+          <i class="pi pi-sign-out"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+</nav>
