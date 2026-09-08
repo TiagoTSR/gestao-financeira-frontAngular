@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { LOCALE_ID } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 
 import { LancamentoCadastro } from './lancamento-cadastro';
@@ -38,6 +39,7 @@ describe('LancamentoCadastro', () => {
       imports: [LancamentoCadastro],
       providers: [
         provideRouter([]),
+        MessageService,
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         { provide: LancamentoService, useValue: mockLancamentoService },
         { provide: CategoriaService, useValue: mockCategoriaService },

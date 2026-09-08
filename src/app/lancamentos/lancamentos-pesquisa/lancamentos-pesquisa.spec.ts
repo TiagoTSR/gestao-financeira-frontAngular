@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { LOCALE_ID } from '@angular/core';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 
 import { LancamentosPesquisa } from './lancamentos-pesquisa';
@@ -55,6 +56,8 @@ describe('LancamentosPesquisa', () => {
       imports: [LancamentosPesquisa],
       providers: [
         provideRouter([]),
+        MessageService,
+        ConfirmationService,
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         { provide: LancamentoService, useValue: mockLancamentoService }
       ]

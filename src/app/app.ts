@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Navbar } from './navbar/navbar';
 
 @Component({
@@ -7,7 +9,9 @@ import { Navbar } from './navbar/navbar';
   standalone: true,
   imports: [
     Navbar,
-    RouterOutlet
+    RouterOutlet,
+    ToastModule,
+    ConfirmDialogModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

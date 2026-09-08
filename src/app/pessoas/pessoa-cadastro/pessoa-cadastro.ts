@@ -10,6 +10,8 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { FluidModule } from 'primeng/fluid';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { MessageService } from 'primeng/api';
+
 // Shared Components & Directives
 import { MessageComponent } from '../../message/message';
 import {
@@ -63,6 +65,7 @@ export interface PessoaFormModel {
 })
 export class PessoaCadastro implements OnInit {
   private readonly pessoaService = inject(PessoaService);
+  private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -136,9 +139,21 @@ export class PessoaCadastro implements OnInit {
 
       this.pessoaService.atualizar(dados.id, req).subscribe({
         next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Pessoa atualizada com sucesso!'
+          });
           this.router.navigate(['/pessoas']);
         },
-        error: (err) => console.error('Erro ao atualizar pessoa:', err)
+        error: (err) => {
+          console.error('Erro ao atualizar pessoa:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao atualizar dados da pessoa.'
+          });
+        }
       });
     } else {
       const req: CriarPessoaRequest = {
@@ -149,9 +164,21 @@ export class PessoaCadastro implements OnInit {
 
       this.pessoaService.criar(req).subscribe({
         next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Pessoa cadastrada com sucesso!'
+          });
           this.router.navigate(['/pessoas']);
         },
-        error: (err) => console.error('Erro ao criar pessoa:', err)
+        error: (err) => {
+          console.error('Erro ao criar pessoa:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao cadastrar pessoa.'
+          });
+        }
       });
     }
   }

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 
 import { PessoasPesquisa } from './pessoas-pesquisa';
@@ -33,6 +34,8 @@ describe('PessoasPesquisa', () => {
       imports: [PessoasPesquisa],
       providers: [
         provideRouter([]),
+        MessageService,
+        ConfirmationService,
         { provide: PessoaService, useValue: mockPessoaService }
       ]
     }).compileComponents();

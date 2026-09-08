@@ -9,6 +9,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { ConfirmationService, MessageService } from 'primeng/api';
+
 import { PessoaService } from '../pessoa.service';
 import { Pessoa, PessoaFilter, PageRequest } from '../../models';
 
@@ -29,6 +31,8 @@ import { Pessoa, PessoaFilter, PageRequest } from '../../models';
 })
 export class PessoasPesquisa implements OnInit {
   private readonly pessoaService = inject(PessoaService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
 
   nomeFiltro = signal('');
   pessoas = signal<Pessoa[]>([]);
@@ -64,6 +68,11 @@ export class PessoasPesquisa implements OnInit {
       error: (err) => {
         console.error('Erro ao listar pessoas:', err);
         this.carregando.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar a lista de pessoas.'
+        });
       }
     });
   }
@@ -83,20 +92,53 @@ export class PessoasPesquisa implements OnInit {
         this.pessoas.update(lista =>
           lista.map(p => (p.id === pessoa.id ? { ...p, ativo: novoStatus } : p))
         );
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Status Atualizado',
+          detail: `Pessoa "${pessoa.nome}" ${novoStatus ? 'ativada' : 'desativada'} com sucesso!`
+        });
       },
-      error: (err) => console.error('Erro ao alterar status:', err)
+      error: (err) => {
+        console.error('Erro ao alterar status:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao alterar o status da pessoa.'
+        });
+      }
     });
   }
 
   remover(pessoa: Pessoa): void {
     if (!pessoa.id) return;
-    if (confirm(`Deseja realmente excluir a pessoa "${pessoa.nome}"?`)) {
-      this.pessoaService.remover(pessoa.id).subscribe({
-        next: () => {
-          this.pesquisar(this.paginaAtual());
-        },
-        error: (err) => console.error('Erro ao excluir pessoa:', err)
-      });
-    }
+
+    this.confirmationService.confirm({
+      message: `Deseja realmente excluir a pessoa "${pessoa.nome}"?`,
+      header: 'Confirmação de Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.pessoaService.remover(pessoa.id!).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Pessoa excluída com sucesso!'
+            });
+            this.pesquisar(this.paginaAtual());
+          },
+          error: (err) => {
+            console.error('Erro ao excluir pessoa:', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Ocorreu um erro ao excluir a pessoa.'
+            });
+          }
+        });
+      }
+    });
   }
 }

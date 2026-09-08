@@ -6,6 +6,7 @@ import localePt from '@angular/common/locales/pt';
 import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 registerLocaleData(localePt);
 
@@ -16,6 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withFetch()),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    MessageService,
+    ConfirmationService,
     providePrimeNG({
       theme: {
         preset: Aura,

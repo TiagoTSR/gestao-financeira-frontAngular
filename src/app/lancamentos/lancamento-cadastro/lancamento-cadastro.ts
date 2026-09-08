@@ -15,6 +15,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { FluidModule } from 'primeng/fluid';
 
+import { MessageService } from 'primeng/api';
+
 import { LancamentoService } from '../lancamento.service';
 import { CategoriaService } from '../../categorias/categoria.service';
 import { PessoaService } from '../../pessoas/pessoa.service';
@@ -62,6 +64,7 @@ export class LancamentoCadastro implements OnInit {
   private readonly lancamentoService = inject(LancamentoService);
   private readonly categoriaService = inject(CategoriaService);
   private readonly pessoaService = inject(PessoaService);
+  private readonly messageService = inject(MessageService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -152,7 +155,11 @@ export class LancamentoCadastro implements OnInit {
     const dados = this.lancamento;
 
     if (!dados.descricao || !dados.dataVencimento || !dados.valor || !dados.categoriaId || !dados.pessoaId) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos Obrigatórios',
+        detail: 'Por favor, preencha todos os campos com asterisco (*).'
+      });
       return;
     }
 
@@ -173,9 +180,21 @@ export class LancamentoCadastro implements OnInit {
 
       this.lancamentoService.atualizar(dados.id, req).subscribe({
         next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Lançamento atualizado com sucesso!'
+          });
           this.router.navigate(['/lancamentos']);
         },
-        error: (err) => console.error('Erro ao atualizar lançamento:', err)
+        error: (err) => {
+          console.error('Erro ao atualizar lançamento:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao atualizar o lançamento.'
+          });
+        }
       });
     } else {
       const req: CriarLancamentoRequest = {
@@ -191,9 +210,21 @@ export class LancamentoCadastro implements OnInit {
 
       this.lancamentoService.criar(req).subscribe({
         next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Lançamento cadastrado com sucesso!'
+          });
           this.router.navigate(['/lancamentos']);
         },
-        error: (err) => console.error('Erro ao criar lançamento:', err)
+        error: (err) => {
+          console.error('Erro ao criar lançamento:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao salvar o lançamento.'
+          });
+        }
       });
     }
   }

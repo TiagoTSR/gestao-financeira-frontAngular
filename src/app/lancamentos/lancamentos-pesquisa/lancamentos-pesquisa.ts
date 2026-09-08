@@ -9,6 +9,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { ConfirmationService, MessageService } from 'primeng/api';
+
 import { LancamentoService } from '../lancamento.service';
 import { Lancamento, LancamentoFilter, PageRequest } from '../../models';
 
@@ -31,6 +33,8 @@ import { Lancamento, LancamentoFilter, PageRequest } from '../../models';
 })
 export class LancamentosPesquisa implements OnInit {
   private readonly lancamentoService = inject(LancamentoService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
 
   descricaoFiltro = signal('');
   dataVencimentoDe = signal('');
@@ -75,6 +79,11 @@ export class LancamentosPesquisa implements OnInit {
       error: (err) => {
         console.error('Erro ao listar lançamentos:', err);
         this.carregando.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível carregar os lançamentos.'
+        });
       }
     });
   }
@@ -87,15 +96,34 @@ export class LancamentosPesquisa implements OnInit {
 
   remover(lancamento: Lancamento): void {
     if (!lancamento.id) return;
-    if (confirm(`Deseja realmente excluir o lançamento "${lancamento.descricao}"?`)) {
-      this.lancamentoService.remover(lancamento.id).subscribe({
-        next: () => {
-          this.pesquisar(this.paginaAtual());
-        },
-        error: (err) => {
-          console.error('Erro ao excluir lançamento:', err);
-        }
-      });
-    }
+
+    this.confirmationService.confirm({
+      message: `Deseja realmente excluir o lançamento "${lancamento.descricao}"?`,
+      header: 'Confirmação de Exclusão',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.lancamentoService.remover(lancamento.id!).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Lançamento excluído com sucesso!'
+            });
+            this.pesquisar(this.paginaAtual());
+          },
+          error: (err) => {
+            console.error('Erro ao excluir lançamento:', err);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Ocorreu um erro ao tentar excluir o lançamento.'
+            });
+          }
+        });
+      }
+    });
   }
 }
