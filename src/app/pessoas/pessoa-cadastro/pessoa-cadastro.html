@@ -12,7 +12,6 @@
     <form #pessoaForm="ngForm" (ngSubmit)="salvar(pessoaForm)" autocomplete="off">
       <p-fluid>
         <div class="grid formgrid">
-
           <!-- Nome -->
           <div class="field col-12">
             <label for="nome" class="font-semibold text-700 block mb-2">Nome *</label>
@@ -24,7 +23,7 @@
               appOnlyLettersName 
               [maxLength]="50"
               placeholder="Digite o nome completo" 
-              [(ngModel)]="pessoa().nome" 
+              [(ngModel)]="pessoa.nome" 
               #nome="ngModel" 
               [required]="true" 
               minlength="5"
@@ -44,7 +43,7 @@
               appAddress 
               [maxLength]="50" 
               type="text" 
-              [(ngModel)]="pessoa().logradouro"
+              [(ngModel)]="pessoa.logradouro"
               #logradouro="ngModel" 
               [required]="true"
               placeholder="Ex: Rua das Flores, Av. Paulista"
@@ -61,7 +60,7 @@
               pInputText 
               name="numero" 
               [maxLength]="10" 
-              [(ngModel)]="pessoa().numero" 
+              [(ngModel)]="pessoa.numero" 
               #numero="ngModel"
               placeholder="Ex: 123" 
               [required]="true"
@@ -79,7 +78,7 @@
               pInputText 
               appComplement 
               [maxLength]="50" 
-              [(ngModel)]="pessoa().complemento" 
+              [(ngModel)]="pessoa.complemento" 
               #complemento="ngModel"
               placeholder="Ex: Apto 102, Bloco B"
               type="text"
@@ -97,7 +96,7 @@
               appAddress 
               [maxLength]="50" 
               type="text" 
-              [(ngModel)]="pessoa().bairro" 
+              [(ngModel)]="pessoa.bairro" 
               #bairro="ngModel"
               [required]="true"
               placeholder="Ex: Centro"
@@ -114,7 +113,7 @@
               name="cep" 
               mask="99999-999" 
               placeholder="00000-000"
-              [(ngModel)]="pessoa().cep"
+              [(ngModel)]="pessoa.cep"
               #cep="ngModel"
               class="w-full"
               styleClass="w-full"
@@ -131,7 +130,7 @@
               appOnlyLettersName 
               [maxLength]="40" 
               type="text" 
-              [(ngModel)]="pessoa().cidade"
+              [(ngModel)]="pessoa.cidade"
               #cidade="ngModel" 
               [required]="true" 
               minlength="3"
@@ -151,9 +150,9 @@
               pInputText 
               appState 
               type="text" 
-              [(ngModel)]="pessoa().estado" 
+              [(ngModel)]="pessoa.estado" 
               #estado="ngModel" 
-              [required]="true"
+              [required]="true" 
               minlength="2" 
               maxlength="2"
               placeholder="Ex: SP"

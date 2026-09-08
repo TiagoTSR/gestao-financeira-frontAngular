@@ -17,7 +17,7 @@
           <div class="field col-12 mb-3">
             <p-selectButton 
               [options]="tipos" 
-              [(ngModel)]="lancamento().tipo" 
+              [(ngModel)]="lancamento.tipo" 
               name="tipo"
               optionLabel="label" 
               optionValue="value"
@@ -29,7 +29,7 @@
             <label for="vencimento" class="font-semibold text-700 block mb-2">Vencimento *</label>
             <p-datepicker 
               id="vencimento"
-              [(ngModel)]="lancamento().dataVencimento" 
+              [(ngModel)]="lancamento.dataVencimento" 
               name="vencimento" 
               dateFormat="dd/mm/yy" 
               [showIcon]="true"
@@ -43,11 +43,11 @@
           <!-- Pagamento / Recebimento -->
           <div class="field col-12 md:col-3">
             <label for="pagamento" class="font-semibold text-700 block mb-2">
-              {{ lancamento().tipo === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}
+              {{ lancamento.tipo === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}
             </label>
             <p-datepicker 
               id="pagamento"
-              [(ngModel)]="lancamento().dataPagamento" 
+              [(ngModel)]="lancamento.dataPagamento" 
               name="pagamento" 
               dateFormat="dd/mm/yy" 
               [showIcon]="true"
@@ -67,7 +67,7 @@
               id="descricao" 
               pInputText 
               type="text" 
-              [(ngModel)]="lancamento().descricao" 
+              [(ngModel)]="lancamento.descricao" 
               name="descricao" 
               placeholder="Ex: Mensalidade da escola"
               class="w-full"
@@ -80,7 +80,7 @@
             <label for="valor" class="font-semibold text-700 block mb-2">Valor *</label>
             <p-inputNumber 
               id="valor"
-              [(ngModel)]="lancamento().valor" 
+              [(ngModel)]="lancamento.valor" 
               name="valor" 
               mode="currency" 
               currency="BRL" 
@@ -98,7 +98,7 @@
             <p-select 
               id="categoria"
               [options]="categorias()" 
-              [(ngModel)]="lancamento().categoriaId" 
+              [(ngModel)]="lancamento.categoriaId" 
               name="categoria" 
               optionLabel="label" 
               optionValue="value" 
@@ -115,7 +115,7 @@
             <p-select 
               id="pessoa"
               [options]="pessoas()" 
-              [(ngModel)]="lancamento().pessoaId" 
+              [(ngModel)]="lancamento.pessoaId" 
               name="pessoa" 
               optionLabel="label" 
               optionValue="value" 
@@ -132,7 +132,7 @@
             <textarea 
               id="observacao"
               pTextarea 
-              [(ngModel)]="lancamento().observacao" 
+              [(ngModel)]="lancamento.observacao" 
               name="observacao" 
               rows="3" 
               placeholder="Observações adicionais sobre o lançamento..."

@@ -36,7 +36,7 @@ describe('PessoaCadastro', () => {
   });
 
   it('deve inicializar com o formulário padrão limpo', () => {
-    expect(component.pessoa().nome).toBe('');
-    expect(component.pessoa().ativo).toBe(true);
+    expect(component.pessoa.nome).toBe('');
+    expect(component.pessoa.ativo).toBe(true);
   });
 });

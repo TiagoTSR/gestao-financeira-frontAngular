@@ -68,7 +68,7 @@ export class PessoaCadastro implements OnInit {
 
   editando = signal(false);
 
-  pessoa = signal<PessoaFormModel>({
+  pessoa: PessoaFormModel = {
     nome: '',
     logradouro: '',
     numero: '',
@@ -78,7 +78,7 @@ export class PessoaCadastro implements OnInit {
     cidade: '',
     estado: '',
     ativo: true
-  });
+  };
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
@@ -91,7 +91,7 @@ export class PessoaCadastro implements OnInit {
   carregarPessoa(id: number): void {
     this.pessoaService.buscarPorId(id).subscribe({
       next: (p) => {
-        this.pessoa.set({
+        this.pessoa = {
           id: p.id,
           nome: p.nome,
           logradouro: p.endereco?.logradouro || '',
@@ -102,7 +102,7 @@ export class PessoaCadastro implements OnInit {
           cidade: p.endereco?.cidade || '',
           estado: p.endereco?.estado || '',
           ativo: p.ativo
-        });
+        };
       },
       error: (err) => console.error('Erro ao carregar pessoa:', err)
     });
@@ -116,7 +116,7 @@ export class PessoaCadastro implements OnInit {
       return;
     }
 
-    const dados = this.pessoa();
+    const dados = this.pessoa;
     const endereco: Endereco = {
       logradouro: dados.logradouro,
       numero: dados.numero || null,
@@ -161,7 +161,7 @@ export class PessoaCadastro implements OnInit {
       form.resetForm();
     }
     this.editando.set(false);
-    this.pessoa.set({
+    this.pessoa = {
       nome: '',
       logradouro: '',
       numero: '',
@@ -171,7 +171,7 @@ export class PessoaCadastro implements OnInit {
       cidade: '',
       estado: '',
       ativo: true
-    });
+    };
     this.router.navigate(['/pessoas/novo']);
   }
 

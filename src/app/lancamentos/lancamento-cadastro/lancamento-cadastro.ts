@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 // PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
@@ -72,7 +73,7 @@ export class LancamentoCadastro implements OnInit {
   categorias = signal<{ label: string; value: number }[]>([]);
   pessoas = signal<{ label: string; value: number }[]>([]);
 
-  lancamento = signal<LancamentoFormModel>({
+  lancamento: LancamentoFormModel = {
     tipo: 'DESPESA',
     dataVencimento: null,
     dataPagamento: null,
@@ -81,7 +82,7 @@ export class LancamentoCadastro implements OnInit {
     categoriaId: null,
     pessoaId: null,
     observacao: ''
-  });
+  };
 
   editando = signal(false);
 
@@ -89,17 +90,21 @@ export class LancamentoCadastro implements OnInit {
     this.carregarCategorias();
     this.carregarPessoas();
 
-    const id = this.route.snapshot.params['id'];
-    if (id) {
+    const idParam = this.route.snapshot.params['id'];
+    if (idParam) {
       this.editando.set(true);
-      this.carregarLancamento(+id);
+      this.carregarLancamento(Number(idParam));
     }
   }
 
   carregarCategorias(): void {
     this.categoriaService.listar().subscribe({
-      next: (dados) => {
-        const formatadas = dados.map(c => ({ label: c.nome, value: c.id! }));
+      next: (dados: any) => {
+        const itens: any[] = Array.isArray(dados) ? dados : (dados?.conteudo || []);
+        const formatadas = itens.map(c => ({
+          label: c.nome,
+          value: Number(c.id)
+        }));
         this.categorias.set(formatadas);
       },
       error: (err) => console.error('Erro ao carregar categorias:', err)
@@ -108,10 +113,12 @@ export class LancamentoCadastro implements OnInit {
 
   carregarPessoas(): void {
     this.pessoaService.listarTodas().subscribe({
-      next: (resultado) => {
-        const formatadas = resultado.conteudo
-          .filter(p => p.ativo)
-          .map(p => ({ label: p.nome, value: p.id! }));
+      next: (resultado: any) => {
+        const itens: any[] = resultado?.conteudo || (Array.isArray(resultado) ? resultado : []);
+        const formatadas = itens.map(p => ({
+          label: p.nome,
+          value: Number(p.id)
+        }));
         this.pessoas.set(formatadas);
       },
       error: (err) => console.error('Erro ao carregar pessoas:', err)
@@ -120,25 +127,29 @@ export class LancamentoCadastro implements OnInit {
 
   carregarLancamento(id: number): void {
     this.lancamentoService.buscarPorId(id).subscribe({
-      next: (l) => {
-        this.lancamento.set({
-          id: l.id,
-          tipo: l.tipo,
-          dataVencimento: l.data_vencimento ? new Date(l.data_vencimento + 'T00:00:00') : null,
-          dataPagamento: l.data_pagamento ? new Date(l.data_pagamento + 'T00:00:00') : null,
-          descricao: l.descricao,
-          valor: l.valor,
-          categoriaId: l.categoria?.id || null,
-          pessoaId: l.pessoa?.id || null,
-          observacao: l.observacao || ''
-        });
+      next: (lancamento: any) => {
+        this.lancamento = {
+          id: lancamento.id ? Number(lancamento.id) : undefined,
+          tipo: lancamento.tipo || 'DESPESA',
+          dataVencimento: lancamento.data_vencimento ? new Date(lancamento.data_vencimento + 'T00:00:00') : null,
+          dataPagamento: lancamento.data_pagamento ? new Date(lancamento.data_pagamento + 'T00:00:00') : null,
+          descricao: lancamento.descricao || '',
+          valor: typeof lancamento.valor === 'string' ? parseFloat(lancamento.valor) : lancamento.valor,
+          categoriaId: (lancamento.categoria?.id !== undefined && lancamento.categoria?.id !== null)
+            ? Number(lancamento.categoria.id)
+            : (lancamento.categoria_id ? Number(lancamento.categoria_id) : null),
+          pessoaId: (lancamento.pessoa?.id !== undefined && lancamento.pessoa?.id !== null)
+            ? Number(lancamento.pessoa.id)
+            : (lancamento.pessoa_id ? Number(lancamento.pessoa_id) : null),
+          observacao: lancamento.observacao || ''
+        };
       },
       error: (err) => console.error('Erro ao carregar lançamento:', err)
     });
   }
 
   salvar(): void {
-    const dados = this.lancamento();
+    const dados = this.lancamento;
 
     if (!dados.descricao || !dados.dataVencimento || !dados.valor || !dados.categoriaId || !dados.pessoaId) {
       alert('Por favor, preencha todos os campos obrigatórios.');
@@ -189,7 +200,7 @@ export class LancamentoCadastro implements OnInit {
 
   novo(): void {
     this.editando.set(false);
-    this.lancamento.set({
+    this.lancamento = {
       tipo: 'DESPESA',
       dataVencimento: null,
       dataPagamento: null,
@@ -198,7 +209,7 @@ export class LancamentoCadastro implements OnInit {
       categoriaId: null,
       pessoaId: null,
       observacao: ''
-    });
+    };
     this.router.navigate(['/lancamentos/novo']);
   }
 
