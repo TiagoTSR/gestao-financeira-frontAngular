@@ -3,7 +3,9 @@
     
     <!-- Cabeçalho -->
     <div class="mb-4">
-      <h1 class="text-3xl font-bold text-900 m-0">Novo Lançamento</h1>
+      <h1 class="text-3xl font-bold text-900 m-0">
+        {{ editando() ? 'Editar Lançamento' : 'Novo Lançamento' }}
+      </h1>
       <span class="text-500 text-sm">Preencha os dados do lançamento financeiro</span>
     </div>
 
@@ -24,7 +26,7 @@
 
           <!-- Vencimento -->
           <div class="field col-12 md:col-3">
-            <label for="vencimento" class="font-semibold text-700 block mb-2">Vencimento</label>
+            <label for="vencimento" class="font-semibold text-700 block mb-2">Vencimento *</label>
             <p-datepicker 
               id="vencimento"
               [(ngModel)]="lancamento().dataVencimento" 
@@ -34,6 +36,7 @@
               placeholder="dd/mm/aaaa"
               class="w-full"
               styleClass="w-full"
+              [required]="true"
             ></p-datepicker>
           </div>
 
@@ -54,12 +57,12 @@
             ></p-datepicker>
           </div>
 
-          <!-- Espaço em branco no desktop para empurrar Descrição para a próxima linha ou alinhar grid -->
+          <!-- Espaço de alinhamento no desktop -->
           <div class="hidden md:block md:col-6"></div>
 
           <!-- Descrição -->
           <div class="field col-12 md:col-9">
-            <label for="descricao" class="font-semibold text-700 block mb-2">Descrição</label>
+            <label for="descricao" class="font-semibold text-700 block mb-2">Descrição *</label>
             <input 
               id="descricao" 
               pInputText 
@@ -68,12 +71,13 @@
               name="descricao" 
               placeholder="Ex: Mensalidade da escola"
               class="w-full"
+              required
             />
           </div>
 
           <!-- Valor -->
           <div class="field col-12 md:col-3">
-            <label for="valor" class="font-semibold text-700 block mb-2">Valor</label>
+            <label for="valor" class="font-semibold text-700 block mb-2">Valor *</label>
             <p-inputNumber 
               id="valor"
               [(ngModel)]="lancamento().valor" 
@@ -84,15 +88,16 @@
               placeholder="R$ 0,00"
               class="w-full"
               styleClass="w-full"
+              [required]="true"
             ></p-inputNumber>
           </div>
 
           <!-- Categoria -->
           <div class="field col-12 md:col-6">
-            <label for="categoria" class="font-semibold text-700 block mb-2">Categoria</label>
+            <label for="categoria" class="font-semibold text-700 block mb-2">Categoria *</label>
             <p-select 
               id="categoria"
-              [options]="categorias" 
+              [options]="categorias()" 
               [(ngModel)]="lancamento().categoriaId" 
               name="categoria" 
               optionLabel="label" 
@@ -100,15 +105,16 @@
               placeholder="Selecione uma categoria"
               class="w-full"
               styleClass="w-full"
+              [required]="true"
             ></p-select>
           </div>
 
           <!-- Pessoa -->
           <div class="field col-12 md:col-6">
-            <label for="pessoa" class="font-semibold text-700 block mb-2">Pessoa</label>
+            <label for="pessoa" class="font-semibold text-700 block mb-2">Pessoa *</label>
             <p-select 
               id="pessoa"
-              [options]="pessoas" 
+              [options]="pessoas()" 
               [(ngModel)]="lancamento().pessoaId" 
               name="pessoa" 
               optionLabel="label" 
@@ -116,6 +122,7 @@
               placeholder="Selecione uma pessoa"
               class="w-full"
               styleClass="w-full"
+              [required]="true"
             ></p-select>
           </div>
 
@@ -137,7 +144,7 @@
           <div class="col-12 mt-3 flex flex-wrap gap-2">
             <button pButton type="submit" label="Salvar" icon="pi pi-check"></button>
             <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info" (click)="novo()"></button>
-            <button pButton type="button" label="Voltar" icon="pi pi-arrow-left" class="p-button-secondary" (click)="voltar()"></button>
+            <a pButton routerLink="/lancamentos" label="Voltar" icon="pi pi-arrow-left" class="p-button-secondary no-underline"></a>
           </div>
 
         </div>

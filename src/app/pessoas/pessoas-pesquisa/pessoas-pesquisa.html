@@ -8,7 +8,7 @@
     </div>
 
     <!-- Formulário de Pesquisa -->
-    <form (ngSubmit)="pesquisar()" class="grid formgrid p-fluid">
+    <form (ngSubmit)="pesquisar(0)" class="grid formgrid p-fluid">
       <div class="field col-12">
         <label for="nome" class="font-semibold text-700 block mb-2">Nome</label>
         <input 
@@ -24,16 +24,20 @@
 
       <div class="col-12 mt-2 flex flex-wrap gap-2">
         <button pButton type="submit" label="Pesquisar" icon="pi pi-search"></button>
-        <button pButton type="button" label="Nova Pessoa" icon="pi pi-plus" class="p-button-success"></button>
+        <a pButton routerLink="/pessoas/novo" label="Nova Pessoa" icon="pi pi-plus" class="p-button-success no-underline"></a>
       </div>
     </form>
 
-    <!-- Tabela de Dados -->
+    <!-- Tabela de Dados Conectada ao Backend -->
     <div class="mt-4">
       <p-table 
         [value]="pessoas()" 
         [paginator]="true" 
-        [rows]="5" 
+        [rows]="itensPorPagina()" 
+        [totalRecords]="totalRegistros()"
+        [lazy]="true"
+        (onLazyLoad)="aoMudarPagina($event)"
+        [loading]="carregando()"
         [rowsPerPageOptions]="[5, 10, 20]"
         responsiveLayout="scroll"
         styleClass="p-datatable-striped p-datatable-gridlines"
@@ -51,8 +55,8 @@
         <ng-template pTemplate="body" let-pessoa>
           <tr>
             <td>{{ pessoa.nome }}</td>
-            <td>{{ pessoa.cidade }}</td>
-            <td class="text-center">{{ pessoa.estado }}</td>
+            <td>{{ pessoa.endereco?.cidade || '-' }}</td>
+            <td class="text-center">{{ pessoa.endereco?.estado || '-' }}</td>
             <td class="text-center">
               <a 
                 href="javascript:;" 
@@ -67,15 +71,17 @@
             </td>
             <td class="text-center">
               <div class="flex justify-content-center gap-1">
-                <button 
+                <a 
                   pButton 
+                  [routerLink]="['/pessoas', pessoa.id]"
                   icon="pi pi-pencil" 
                   class="p-button-text p-button-rounded p-button-sm" 
                   pTooltip="Editar"
                   tooltipPosition="top"
-                ></button>
+                ></a>
                 <button 
                   pButton 
+                  (click)="remover(pessoa)"
                   icon="pi pi-trash" 
                   class="p-button-text p-button-rounded p-button-danger p-button-sm" 
                   pTooltip="Excluir"

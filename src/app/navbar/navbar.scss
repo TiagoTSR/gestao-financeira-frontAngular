@@ -105,6 +105,13 @@
       background-color: #334155;
       padding-left: 1.5rem;
     }
+
+    &.ativo {
+      color: #38bdf8;
+      background-color: #0f172a;
+      border-left: 4px solid #38bdf8;
+      font-weight: 600;
+    }
   }
 
   .item-logout {

@@ -1,17 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+// PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 
-export interface Pessoa {
-  nome: string;
-  cidade: string;
-  estado: string;
-  ativo: boolean;
-}
+import { PessoaService } from '../pessoa.service';
+import { Pessoa, PessoaFilter, PageRequest } from '../../models';
 
 @Component({
   selector: 'app-pessoas-pesquisa',
@@ -19,6 +18,7 @@ export interface Pessoa {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     ButtonModule,
     InputTextModule,
     TableModule,
@@ -27,25 +27,76 @@ export interface Pessoa {
   templateUrl: './pessoas-pesquisa.html',
   styleUrl: './pessoas-pesquisa.scss',
 })
-export class PessoasPesquisa {
+export class PessoasPesquisa implements OnInit {
+  private readonly pessoaService = inject(PessoaService);
+
   nomeFiltro = signal('');
+  pessoas = signal<Pessoa[]>([]);
+  totalRegistros = signal(0);
+  itensPorPagina = signal(5);
+  paginaAtual = signal(0);
+  carregando = signal(false);
 
-  pessoas = signal<Pessoa[]>([
-    { nome: 'Manoel Pinheiro', cidade: 'Uberlândia', estado: 'MG', ativo: true },
-    { nome: 'Sebastião da Silva', cidade: 'São Paulo', estado: 'SP', ativo: false },
-    { nome: 'Carla Souza', cidade: 'Florianópolis', estado: 'SC', ativo: true },
-    { nome: 'Luís Pereira', cidade: 'Curitiba', estado: 'PR', ativo: true },
-    { nome: 'Vilmar Andrade', cidade: 'Rio de Janeiro', estado: 'RJ', ativo: false },
-    { nome: 'Paula Maria', cidade: 'Uberlândia', estado: 'MG', ativo: true }
-  ]);
+  ngOnInit(): void {
+    this.pesquisar();
+  }
 
-  pesquisar(): void {
-    console.log('Pesquisando pessoas por nome:', this.nomeFiltro());
+  pesquisar(pagina = 0): void {
+    this.paginaAtual.set(pagina);
+    this.carregando.set(true);
+
+    const filtro: PessoaFilter = {};
+    if (this.nomeFiltro()) {
+      filtro.nome = this.nomeFiltro();
+    }
+
+    const paginacao: PageRequest = {
+      pagina: this.paginaAtual(),
+      tamanho: this.itensPorPagina()
+    };
+
+    this.pessoaService.listar(filtro, paginacao).subscribe({
+      next: (resultado) => {
+        this.pessoas.set(resultado.conteudo);
+        this.totalRegistros.set(resultado.total_elementos);
+        this.carregando.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao listar pessoas:', err);
+        this.carregando.set(false);
+      }
+    });
+  }
+
+  aoMudarPagina(event: any): void {
+    const pagina = event.first / event.rows;
+    this.itensPorPagina.set(event.rows);
+    this.pesquisar(pagina);
   }
 
   alternarStatus(pessoa: Pessoa): void {
-    this.pessoas.update(lista =>
-      lista.map(p => (p === pessoa ? { ...p, ativo: !p.ativo } : p))
-    );
+    if (!pessoa.id) return;
+
+    const novoStatus = !pessoa.ativo;
+    this.pessoaService.atualizarAtivo(pessoa.id, novoStatus).subscribe({
+      next: () => {
+        this.pessoas.update(lista =>
+          lista.map(p => (p.id === pessoa.id ? { ...p, ativo: novoStatus } : p))
+        );
+      },
+      error: (err) => console.error('Erro ao alterar status:', err)
+    });
+  }
+
+  remover(pessoa: Pessoa): void {
+    if (!pessoa.id) return;
+    if (confirm(`Deseja realmente excluir a pessoa "${pessoa.nome}"?`)) {
+      this.pessoaService.remover(pessoa.id).subscribe({
+        next: () => {
+          this.pesquisar(this.paginaAtual());
+        },
+        error: (err) => console.error('Erro ao excluir pessoa:', err)
+      });
+    }
   }
 }

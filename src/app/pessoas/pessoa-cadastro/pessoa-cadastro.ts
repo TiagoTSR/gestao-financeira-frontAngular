@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 // PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +19,16 @@ import {
   StateDirective
 } from '../../shared';
 
-export interface PessoaForm {
+import { PessoaService } from '../pessoa.service';
+import {
+  Pessoa,
+  CriarPessoaRequest,
+  AtualizarPessoaRequest,
+  Endereco
+} from '../../models';
+
+export interface PessoaFormModel {
+  id?: number;
   nome: string;
   logradouro: string;
   numero: string;
@@ -36,6 +46,7 @@ export interface PessoaForm {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     ButtonModule,
     InputTextModule,
     InputMaskModule,
@@ -50,8 +61,14 @@ export interface PessoaForm {
   templateUrl: './pessoa-cadastro.html',
   styleUrl: './pessoa-cadastro.scss',
 })
-export class PessoaCadastro {
-  pessoa = signal<PessoaForm>({
+export class PessoaCadastro implements OnInit {
+  private readonly pessoaService = inject(PessoaService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  editando = signal(false);
+
+  pessoa = signal<PessoaFormModel>({
     nome: '',
     logradouro: '',
     numero: '',
@@ -63,6 +80,34 @@ export class PessoaCadastro {
     ativo: true
   });
 
+  ngOnInit(): void {
+    const id = this.route.snapshot.params['id'];
+    if (id) {
+      this.editando.set(true);
+      this.carregarPessoa(+id);
+    }
+  }
+
+  carregarPessoa(id: number): void {
+    this.pessoaService.buscarPorId(id).subscribe({
+      next: (p) => {
+        this.pessoa.set({
+          id: p.id,
+          nome: p.nome,
+          logradouro: p.endereco?.logradouro || '',
+          numero: p.endereco?.numero || '',
+          complemento: p.endereco?.complemento || '',
+          bairro: p.endereco?.bairro || '',
+          cep: p.endereco?.cep || '',
+          cidade: p.endereco?.cidade || '',
+          estado: p.endereco?.estado || '',
+          ativo: p.ativo
+        });
+      },
+      error: (err) => console.error('Erro ao carregar pessoa:', err)
+    });
+  }
+
   salvar(form?: NgForm): void {
     if (form && form.invalid) {
       Object.keys(form.controls).forEach(key => {
@@ -70,13 +115,52 @@ export class PessoaCadastro {
       });
       return;
     }
-    console.log('Salvando pessoa:', this.pessoa());
+
+    const dados = this.pessoa();
+    const endereco: Endereco = {
+      logradouro: dados.logradouro,
+      numero: dados.numero || null,
+      complemento: dados.complemento || null,
+      bairro: dados.bairro,
+      cep: dados.cep,
+      cidade: dados.cidade,
+      estado: dados.estado
+    };
+
+    if (this.editando() && dados.id) {
+      const req: AtualizarPessoaRequest = {
+        nome: dados.nome,
+        ativo: dados.ativo,
+        endereco
+      };
+
+      this.pessoaService.atualizar(dados.id, req).subscribe({
+        next: () => {
+          this.router.navigate(['/pessoas']);
+        },
+        error: (err) => console.error('Erro ao atualizar pessoa:', err)
+      });
+    } else {
+      const req: CriarPessoaRequest = {
+        nome: dados.nome,
+        ativo: dados.ativo,
+        endereco
+      };
+
+      this.pessoaService.criar(req).subscribe({
+        next: () => {
+          this.router.navigate(['/pessoas']);
+        },
+        error: (err) => console.error('Erro ao criar pessoa:', err)
+      });
+    }
   }
 
   novo(form?: NgForm): void {
     if (form) {
       form.resetForm();
     }
+    this.editando.set(false);
     this.pessoa.set({
       nome: '',
       logradouro: '',
@@ -88,9 +172,10 @@ export class PessoaCadastro {
       estado: '',
       ativo: true
     });
+    this.router.navigate(['/pessoas/novo']);
   }
 
   voltar(): void {
-    console.log('Voltando para listagem de pessoas...');
+    this.router.navigate(['/pessoas']);
   }
 }

@@ -12,10 +12,10 @@
         <i class="pi pi-bars text-xl"></i>
       </button>
 
-      <div class="navbar-brand flex align-items-center gap-2">
+      <a routerLink="/lancamentos" class="navbar-brand flex align-items-center gap-2 no-underline cursor-pointer">
         <i class="pi pi-wallet text-2xl text-white"></i>
         <span class="font-bold text-xl text-white">Gestão Financeira</span>
-      </div>
+      </a>
     </div>
 
     <!-- Lado Direito: Nome do Usuário no Desktop -->
@@ -45,22 +45,22 @@
       </button>
     </div>
 
-    <!-- Itens de Navegação -->
+    <!-- Itens de Navegação com RouterLink -->
     <ul class="navbar-menu-items">
       <li>
-        <a href="#" (click)="fecharMenu()">
+        <a routerLink="/lancamentos" routerLinkActive="ativo" (click)="fecharMenu()">
           <i class="pi pi-money-bill"></i>
           <span>Lançamentos</span>
         </a>
       </li>
       <li>
-        <a href="#" (click)="fecharMenu()">
+        <a routerLink="/pessoas" routerLinkActive="ativo" (click)="fecharMenu()">
           <i class="pi pi-users"></i>
           <span>Pessoas</span>
         </a>
       </li>
       <li class="item-logout">
-        <a href="#" (click)="fecharMenu()">
+        <a href="javascript:;" (click)="fecharMenu()">
           <i class="pi pi-sign-out"></i>
           <span>Logout</span>
         </a>
