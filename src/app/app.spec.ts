@@ -14,12 +14,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('deve renderizar os componentes navbar e lancamento-cadastro', async () => {
+  it('deve renderizar os componentes navbar e pessoa-cadastro', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-navbar')).toBeTruthy();
-    expect(compiled.querySelector('app-lancamento-cadastro')).toBeTruthy();
+    expect(compiled.querySelector('app-pessoa-cadastro')).toBeTruthy();
   });
 });

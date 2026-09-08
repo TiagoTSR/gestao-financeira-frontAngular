@@ -1,0 +1,176 @@
+<div class="container py-4">
+  <div class="surface-card p-4 shadow-1 border-round">
+
+    <!-- Cabeçalho -->
+    <div class="mb-4">
+      <h1 class="text-3xl font-bold text-900 m-0">Nova Pessoa</h1>
+      <span class="text-500 text-sm">Cadastre e gerencie as informações de contato e endereço</span>
+    </div>
+
+    <form #pessoaForm="ngForm" (ngSubmit)="salvar(pessoaForm)" autocomplete="off">
+      <p-fluid>
+        <div class="grid formgrid">
+
+          <!-- Nome -->
+          <div class="field col-12">
+            <label for="nome" class="font-semibold text-700 block mb-2">Nome</label>
+            <input 
+              id="nome"
+              pInputText 
+              name="nome" 
+              type="text" 
+              appOnlyLettersName 
+              [maxLength]="50"
+              placeholder="Digite o nome completo" 
+              [(ngModel)]="pessoa().nome" 
+              #nome="ngModel" 
+              [required]="true" 
+              minlength="5"
+              class="w-full"
+            />
+            <app-message [control]="nome.control" error="required" text="Nome é obrigatório"></app-message>
+            <app-message [control]="nome.control" error="minlength" text="Nome deve ter no mínimo 5 caracteres"></app-message>
+          </div>
+
+          <!-- Logradouro -->
+          <div class="field col-12 md:col-9">
+            <label for="logradouro" class="font-semibold text-700 block mb-2">Logradouro</label>
+            <input 
+              id="logradouro"
+              name="logradouro" 
+              pInputText 
+              appAddress 
+              [maxLength]="50" 
+              type="text" 
+              [(ngModel)]="pessoa().logradouro"
+              #logradouro="ngModel" 
+              [required]="true"
+              placeholder="Ex: Rua das Flores, Av. Paulista"
+              class="w-full"
+            />
+            <app-message [control]="logradouro.control" error="required" text="Informe o logradouro"></app-message>
+          </div>
+
+          <!-- Número -->
+          <div class="field col-12 md:col-3">
+            <label for="numero" class="font-semibold text-700 block mb-2">Número</label>
+            <input 
+              id="numero"
+              pInputText 
+              name="numero" 
+              [maxLength]="10" 
+              [(ngModel)]="pessoa().numero" 
+              #numero="ngModel"
+              placeholder="Ex: 123" 
+              [required]="true"
+              class="w-full"
+            />
+            <app-message [control]="numero.control" error="required" text="Número é obrigatório"></app-message>
+          </div>
+
+          <!-- Complemento -->
+          <div class="field col-12 md:col-4">
+            <label for="complemento" class="font-semibold text-700 block mb-2">Complemento</label>
+            <input 
+              id="complemento"
+              name="complemento" 
+              pInputText 
+              appComplement 
+              [maxLength]="50" 
+              [(ngModel)]="pessoa().complemento" 
+              #complemento="ngModel"
+              placeholder="Ex: Apto 102, Bloco B"
+              type="text"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Bairro -->
+          <div class="field col-12 md:col-4">
+            <label for="bairro" class="font-semibold text-700 block mb-2">Bairro</label>
+            <input 
+              id="bairro"
+              name="bairro" 
+              pInputText 
+              appAddress 
+              [maxLength]="50" 
+              type="text" 
+              [(ngModel)]="pessoa().bairro" 
+              #bairro="ngModel"
+              [required]="true"
+              placeholder="Ex: Centro"
+              class="w-full"
+            />
+            <app-message [control]="bairro.control" error="required" text="Informe o bairro"></app-message>
+          </div>
+
+          <!-- CEP -->
+          <div class="field col-12 md:col-4">
+            <label for="cep" class="font-semibold text-700 block mb-2">CEP</label>
+            <p-inputmask 
+              id="cep"
+              name="cep" 
+              mask="99999-999" 
+              placeholder="00000-000"
+              [(ngModel)]="pessoa().cep"
+              #cep="ngModel"
+              class="w-full"
+              styleClass="w-full"
+            ></p-inputmask>
+          </div>
+
+          <!-- Cidade -->
+          <div class="field col-12 md:col-6">
+            <label for="cidade" class="font-semibold text-700 block mb-2">Cidade</label>
+            <input 
+              id="cidade"
+              name="cidade" 
+              pInputText 
+              appOnlyLettersName 
+              [maxLength]="40" 
+              type="text" 
+              [(ngModel)]="pessoa().cidade"
+              #cidade="ngModel" 
+              [required]="true" 
+              minlength="3"
+              placeholder="Ex: São Paulo"
+              class="w-full"
+            />
+            <app-message [control]="cidade.control" error="required" text="Informe a cidade"></app-message>
+            <app-message [control]="cidade.control" error="minlength" text="Cidade deve ter no mínimo 3 caracteres"></app-message>
+          </div>
+
+          <!-- Estado -->
+          <div class="field col-12 md:col-6">
+            <label for="estado" class="font-semibold text-700 block mb-2">Estado (UF)</label>
+            <input 
+              id="estado"
+              name="estado" 
+              pInputText 
+              appState 
+              type="text" 
+              [(ngModel)]="pessoa().estado" 
+              #estado="ngModel" 
+              [required]="true"
+              minlength="2" 
+              maxlength="2"
+              placeholder="Ex: SP"
+              class="w-full"
+            />
+            <app-message [control]="estado.control" error="required" text="Informe o estado"></app-message>
+            <app-message [control]="estado.control" error="minlength" text="O estado deve ter 2 letras"></app-message>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="col-12 mt-3 flex flex-wrap gap-2">
+            <button pButton type="submit" label="Salvar" icon="pi pi-check" [disabled]="pessoaForm.invalid"></button>
+            <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info" (click)="novo(pessoaForm)"></button>
+            <button pButton type="button" label="Voltar" icon="pi pi-arrow-left" class="p-button-secondary" (click)="voltar()"></button>
+          </div>
+
+        </div>
+      </p-fluid>
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep {
+  .p-inputmask,
+  .p-inputtext {
+    width: 100% !important;
+  }
+}

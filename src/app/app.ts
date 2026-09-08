@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Navbar } from '../navbar/navbar';
-import { LancamentoCadastro } from '../lancamento-cadastro/lancamento-cadastro';
+import { PessoaCadastro } from '../pessoa-cadastro/pessoa-cadastro';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     Navbar,
-    LancamentoCadastro
+    PessoaCadastro
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
