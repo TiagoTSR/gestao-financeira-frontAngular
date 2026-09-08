@@ -10,13 +10,13 @@ import { FluidModule } from 'primeng/fluid';
 import { TooltipModule } from 'primeng/tooltip';
 
 // Shared Components & Directives
-import { MessageComponent } from '../message/message';
+import { MessageComponent } from '../../message/message';
 import {
   OnlyLettersName,
   AddressDirective,
   ComplementDirective,
   StateDirective
-} from '../shared';
+} from '../../shared';
 
 export interface PessoaForm {
   nome: string;
