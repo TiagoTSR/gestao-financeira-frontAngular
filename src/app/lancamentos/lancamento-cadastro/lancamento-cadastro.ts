@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
@@ -16,6 +16,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FluidModule } from 'primeng/fluid';
 
 import { MessageService } from 'primeng/api';
+import { MessageComponent } from '../../message/message';
 
 import { LancamentoService } from '../lancamento.service';
 import { CategoriaService } from '../../categorias/categoria.service';
@@ -55,7 +56,8 @@ export interface LancamentoFormModel {
     SelectModule,
     TextareaModule,
     TooltipModule,
-    FluidModule
+    FluidModule,
+    MessageComponent
   ],
   templateUrl: './lancamento-cadastro.html',
   styleUrl: './lancamento-cadastro.scss',
@@ -151,7 +153,19 @@ export class LancamentoCadastro implements OnInit {
     });
   }
 
-  salvar(): void {
+  salvar(form?: NgForm): void {
+    if (form && form.invalid) {
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos Obrigatórios',
+        detail: 'Por favor, preencha todos os campos obrigatórios (*).'
+      });
+      return;
+    }
+
     const dados = this.lancamento;
 
     if (!dados.descricao || !dados.dataVencimento || !dados.valor || !dados.categoriaId || !dados.pessoaId) {
@@ -229,7 +243,10 @@ export class LancamentoCadastro implements OnInit {
     }
   }
 
-  novo(): void {
+  novo(form?: NgForm): void {
+    if (form) {
+      form.resetForm();
+    }
     this.editando.set(false);
     this.lancamento = {
       tipo: 'DESPESA',

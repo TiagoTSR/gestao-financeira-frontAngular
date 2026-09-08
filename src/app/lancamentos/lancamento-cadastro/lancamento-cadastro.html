@@ -9,7 +9,7 @@
       <span class="text-500 text-sm">Preencha os dados do lançamento financeiro</span>
     </div>
 
-    <form (ngSubmit)="salvar()">
+    <form #lancamentoForm="ngForm" (ngSubmit)="salvar(lancamentoForm)" autocomplete="off">
       <p-fluid>
         <div class="grid formgrid">
           
@@ -31,6 +31,7 @@
               id="vencimento"
               [(ngModel)]="lancamento.dataVencimento" 
               name="vencimento" 
+              #vencimento="ngModel"
               dateFormat="dd/mm/yy" 
               [showIcon]="true"
               placeholder="dd/mm/aaaa"
@@ -38,6 +39,7 @@
               styleClass="w-full"
               [required]="true"
             ></p-datepicker>
+            <app-message [control]="vencimento.control" error="required" text="Informe a data de vencimento"></app-message>
           </div>
 
           <!-- Pagamento / Recebimento -->
@@ -49,6 +51,7 @@
               id="pagamento"
               [(ngModel)]="lancamento.dataPagamento" 
               name="pagamento" 
+              #pagamento="ngModel"
               dateFormat="dd/mm/yy" 
               [showIcon]="true"
               placeholder="dd/mm/aaaa"
@@ -69,10 +72,14 @@
               type="text" 
               [(ngModel)]="lancamento.descricao" 
               name="descricao" 
+              #descricao="ngModel"
               placeholder="Ex: Mensalidade da escola"
               class="w-full"
-              required
+              [required]="true"
+              minlength="5"
             />
+            <app-message [control]="descricao.control" error="required" text="Informe a descrição"></app-message>
+            <app-message [control]="descricao.control" error="minlength" text="Descrição deve ter no mínimo 5 caracteres"></app-message>
           </div>
 
           <!-- Valor -->
@@ -82,6 +89,7 @@
               id="valor"
               [(ngModel)]="lancamento.valor" 
               name="valor" 
+              #valor="ngModel"
               mode="currency" 
               currency="BRL" 
               locale="pt-BR" 
@@ -90,6 +98,7 @@
               styleClass="w-full"
               [required]="true"
             ></p-inputNumber>
+            <app-message [control]="valor.control" error="required" text="Informe o valor"></app-message>
           </div>
 
           <!-- Categoria -->
@@ -100,6 +109,7 @@
               [options]="categorias()" 
               [(ngModel)]="lancamento.categoriaId" 
               name="categoria" 
+              #categoria="ngModel"
               optionLabel="label" 
               optionValue="value" 
               placeholder="Selecione uma categoria"
@@ -107,6 +117,7 @@
               styleClass="w-full"
               [required]="true"
             ></p-select>
+            <app-message [control]="categoria.control" error="required" text="Informe a categoria"></app-message>
           </div>
 
           <!-- Pessoa -->
@@ -117,6 +128,7 @@
               [options]="pessoas()" 
               [(ngModel)]="lancamento.pessoaId" 
               name="pessoa" 
+              #pessoa="ngModel"
               optionLabel="label" 
               optionValue="value" 
               placeholder="Selecione uma pessoa"
@@ -124,6 +136,7 @@
               styleClass="w-full"
               [required]="true"
             ></p-select>
+            <app-message [control]="pessoa.control" error="required" text="Informe a pessoa"></app-message>
           </div>
 
           <!-- Observação -->
@@ -142,8 +155,8 @@
 
           <!-- Botões de Ação -->
           <div class="col-12 mt-3 flex flex-wrap gap-2">
-            <button pButton type="submit" label="Salvar" icon="pi pi-check"></button>
-            <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info" (click)="novo()"></button>
+            <button pButton type="submit" label="Salvar" icon="pi pi-check" [disabled]="lancamentoForm.invalid"></button>
+            <button pButton type="button" label="Novo" icon="pi pi-plus" class="p-button-info" (click)="novo(lancamentoForm)"></button>
             <a pButton routerLink="/lancamentos" label="Voltar" icon="pi pi-arrow-left" class="p-button-secondary no-underline"></a>
           </div>
 
