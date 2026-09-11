@@ -1,4 +1,4 @@
-﻿import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -26,7 +26,7 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  usuario = '';
+  email = '';
   senha = '';
   submetido = signal(false);
   carregando = signal(false);
@@ -36,19 +36,19 @@ export class LoginComponent {
     this.submetido.set(true);
     this.erro.set(null);
 
-    if (form.invalid || !this.usuario.trim() || !this.senha.trim()) {
+    if (form.invalid || !this.email.trim() || !this.senha.trim()) {
       return;
     }
 
     this.carregando.set(true);
-    this.authService.login(this.usuario.trim(), this.senha.trim()).subscribe({
+    this.authService.login(this.email.trim(), this.senha.trim()).subscribe({
       next: () => {
         this.carregando.set(false);
         this.router.navigate(['/lancamentos']);
       },
       error: () => {
         this.carregando.set(false);
-        this.erro.set('Usuário ou senha inválidos. Verifique suas credenciais.');
+        this.erro.set('E-mail ou senha inválidos. Verifique suas credenciais.');
       }
     });
   }

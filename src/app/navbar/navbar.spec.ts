@@ -1,21 +1,27 @@
-﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { Navbar } from './navbar';
-import { AuthService } from '../core/services/auth.service';
+import { AuthService, UsuarioLogado } from '../core/services/auth.service';
 
 describe('Navbar', () => {
   let component: Navbar;
   let fixture: ComponentFixture<Navbar>;
   let authServiceMock: {
-    usuario: ReturnType<typeof signal<string | null>>;
+    usuario: ReturnType<typeof signal<UsuarioLogado | null>>;
+    nomeUsuario: ReturnType<typeof signal<string>>;
     estaAutenticado: ReturnType<typeof signal<boolean>>;
     logout: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
     authServiceMock = {
-      usuario: signal('admin'),
+      usuario: signal<UsuarioLogado | null>({
+        nome: 'Administrador',
+        email: 'admin@example.com',
+        permissoes: []
+      }),
+      nomeUsuario: signal('Administrador'),
       estaAutenticado: signal(true),
       logout: vi.fn()
     };
@@ -42,7 +48,7 @@ describe('Navbar', () => {
   });
 
   it('deve inicializar com o usuário logado correto', () => {
-    expect(component.authService.usuario()).toBe('admin');
+    expect(component.authService.nomeUsuario()).toBe('Administrador');
   });
 
   it('deve alternar o estado do menu ao chamar alternarMenu()', () => {

@@ -1,4 +1,4 @@
-﻿<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
+<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
   <div class="login-card surface-card p-5 shadow-2 border-round w-full sm:w-30rem">
     
     <!-- Cabeçalho -->
@@ -22,26 +22,27 @@
     <form #loginForm="ngForm" (ngSubmit)="entrar(loginForm)" class="flex flex-column gap-4" novalidate>
       
       <div class="flex flex-column gap-2">
-        <label for="usuario" class="font-semibold text-slate-700 text-sm">Usuário *</label>
+        <label for="email" class="font-semibold text-slate-700 text-sm">E-mail *</label>
         <span class="p-input-icon-left w-full">
-          <i class="pi pi-user text-slate-400"></i>
+          <i class="pi pi-envelope text-slate-400"></i>
           <input
             pInputText
-            id="usuario"
-            name="usuario"
-            [(ngModel)]="usuario"
-            #usuarioInput="ngModel"
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            #emailInput="ngModel"
             required
-            placeholder="Ex: admin"
+            placeholder="Ex: admin@example.com"
             class="w-full"
-            [class.ng-invalid]="submetido() && usuarioInput.invalid"
-            [class.ng-dirty]="submetido() && usuarioInput.invalid"
+            [class.ng-invalid]="submetido() && emailInput.invalid"
+            [class.ng-dirty]="submetido() && emailInput.invalid"
             [disabled]="carregando()"
-            autocomplete="username"
+            autocomplete="email"
           />
         </span>
-        @if (submetido() && usuarioInput.invalid) {
-          <small class="text-red-500 font-medium text-xs">Informe o nome de usuário.</small>
+        @if (submetido() && emailInput.invalid) {
+          <small class="text-red-500 font-medium text-xs">Informe o e-mail.</small>
         }
       </div>
 
@@ -83,7 +84,7 @@
 
     <div class="mt-4 text-center">
       <span class="text-xs text-slate-400">
-        Credenciais padrão: <strong>admin</strong> / <strong>admin</strong>
+        Credenciais padrão: <strong>admin@example.com</strong> / <strong>admin</strong>
       </span>
     </div>
 

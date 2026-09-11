@@ -1,4 +1,4 @@
-﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -35,26 +35,26 @@ describe('LoginComponent', () => {
   });
 
   it('deve chamar AuthService.login e redirecionar para /lancamentos no sucesso', async () => {
-    component.usuario = 'admin';
+    component.email = 'admin@example.com';
     component.senha = 'admin';
 
     const formMock = { invalid: false } as any;
     component.entrar(formMock);
 
-    expect(authServiceMock.login).toHaveBeenCalledWith('admin', 'admin');
+    expect(authServiceMock.login).toHaveBeenCalledWith('admin@example.com', 'admin');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/lancamentos']);
   });
 
   it('deve exibir mensagem de erro quando AuthService.login falhar', () => {
     authServiceMock.login.mockReturnValue(throwError(() => new Error('401 Unauthorized')));
 
-    component.usuario = 'admin';
+    component.email = 'admin@example.com';
     component.senha = 'senha_errada';
 
     const formMock = { invalid: false } as any;
     component.entrar(formMock);
 
-    expect(component.erro()).toBe('Usuário ou senha inválidos. Verifique suas credenciais.');
+    expect(component.erro()).toBe('E-mail ou senha inválidos. Verifique suas credenciais.');
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 });
