@@ -15,6 +15,8 @@ describe('Navbar', () => {
   };
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
+
     authServiceMock = {
       usuario: signal<UsuarioLogado | null>({
         nome: 'Administrador',
@@ -37,6 +39,10 @@ describe('Navbar', () => {
     fixture = TestBed.createComponent(Navbar);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
   });
 
   it('deve criar o componente navbar', () => {

@@ -72,6 +72,10 @@ describe('AuthService', () => {
 
     service.logout();
 
+    const req = httpMock.expectOne('http://localhost:8080/auth/logout');
+    expect(req.request.method).toBe('POST');
+    req.flush({});
+
     expect(service.estaAutenticado()).toBe(false);
     expect(service.usuario()).toBeNull();
     expect(service.token()).toBeNull();
