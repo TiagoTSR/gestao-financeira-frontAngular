@@ -1,3 +1,4 @@
+﻿@if (authService.estaAutenticado()) {
 <nav class="navbar">
   <div class="container flex align-items-center justify-content-between">
     
@@ -21,7 +22,7 @@
     <!-- Lado Direito: Nome do Usuário no Desktop -->
     <div class="hidden md:flex align-items-center gap-2 text-white">
       <i class="pi pi-user text-lg"></i>
-      <span class="font-medium text-sm">{{ usuarioLogado() }}</span>
+      <span class="font-medium text-sm">{{ authService.usuario() || 'Usuário' }}</span>
     </div>
 
   </div>
@@ -38,7 +39,7 @@
     <div class="navbar-usuario flex align-items-center justify-content-between">
       <div class="flex align-items-center gap-2">
         <i class="pi pi-user"></i>
-        <span>{{ usuarioLogado() }}</span>
+        <span>{{ authService.usuario() || 'Usuário' }}</span>
       </div>
       <button type="button" class="btn-fechar" (click)="fecharMenu()" aria-label="Fechar menu">
         <i class="pi pi-times"></i>
@@ -60,7 +61,7 @@
         </a>
       </li>
       <li class="item-logout">
-        <a href="javascript:;" (click)="fecharMenu()">
+        <a href="javascript:;" (click)="logout()">
           <i class="pi pi-sign-out"></i>
           <span>Logout</span>
         </a>
@@ -68,3 +69,4 @@
     </ul>
   </aside>
 </nav>
+}

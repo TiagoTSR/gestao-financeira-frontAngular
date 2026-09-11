@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,8 +15,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.scss',
 })
 export class Navbar {
+  readonly authService = inject(AuthService);
+
   exibindoMenu = signal(false);
-  usuarioLogado = signal('Tiago Silva');
 
   alternarMenu(): void {
     this.exibindoMenu.update(valor => !valor);
@@ -23,5 +25,10 @@ export class Navbar {
 
   fecharMenu(): void {
     this.exibindoMenu.set(false);
+  }
+
+  logout(): void {
+    this.fecharMenu();
+    this.authService.logout();
   }
 }
