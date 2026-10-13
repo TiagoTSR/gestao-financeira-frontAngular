@@ -138,7 +138,7 @@ export class AuthService {
   }
 
   cadastrar(username: string, email: string, pass: string): Observable<any> {
-    return this.http.post(${this.apiUrl}/auth/register, {
+    return this.http.post(this.apiUrl + '/auth/register', {
       username: username.trim(),
       email: email.trim(),
       password: pass.trim()
