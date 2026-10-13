@@ -1,16 +1,20 @@
-<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
+﻿<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
   <div class="login-card surface-card p-5 shadow-2 border-round w-full sm:w-30rem">
     
-    <!-- Cabeçalho -->
     <div class="text-center mb-5">
       <div class="inline-flex align-items-center justify-content-center bg-blue-100 border-circle w-4rem h-4rem mb-3">
         <i class="pi pi-wallet text-blue-600 text-3xl"></i>
       </div>
-      <h1 class="text-900 font-bold text-2xl mb-2">Gestão Financeira</h1>
-      <p class="text-600 font-medium text-sm">Entre com suas credenciais para acessar</p>
+      <h1 class="text-900 font-bold text-2xl mb-2">GestÃ£o Financeira</h1>
+      <p class="text-600 font-medium text-sm">
+        @if (modoCadastro()) {
+          Preencha os dados para criar sua conta
+        } @else {
+          Entre com suas credenciais para acessar
+        }
+      </p>
     </div>
 
-    <!-- Alerta de Erro -->
     @if (erro()) {
       <div class="p-3 mb-4 bg-red-100 border-round text-red-700 text-sm flex align-items-center gap-2" role="alert">
         <i class="pi pi-exclamation-circle text-lg"></i>
@@ -18,75 +22,185 @@
       </div>
     }
 
-    <!-- Formulário -->
-    <form #loginForm="ngForm" (ngSubmit)="entrar(loginForm)" class="flex flex-column gap-4" novalidate>
-      
-      <div class="flex flex-column gap-2">
-        <label for="email" class="font-semibold text-slate-700 text-sm">E-mail *</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-envelope text-slate-400"></i>
-          <input
-            pInputText
-            type="email"
-            id="email"
-            name="email"
-            [(ngModel)]="email"
-            #emailInput="ngModel"
-            required
-            placeholder="Ex: admin@example.com"
-            class="w-full"
-            [class.ng-invalid]="submetido() && emailInput.invalid"
-            [class.ng-dirty]="submetido() && emailInput.invalid"
-            [disabled]="carregando()"
-            autocomplete="email"
-          />
-        </span>
-        @if (submetido() && emailInput.invalid) {
-          <small class="text-red-500 font-medium text-xs">Informe o e-mail.</small>
-        }
+    @if (sucesso()) {
+      <div class="p-3 mb-4 bg-green-100 border-round text-green-700 text-sm flex align-items-center gap-2" role="alert">
+        <i class="pi pi-check-circle text-lg"></i>
+        <span>{{ sucesso() }}</span>
       </div>
+    }
 
-      <div class="flex flex-column gap-2">
-        <label for="senha" class="font-semibold text-slate-700 text-sm">Senha *</label>
-        <span class="p-input-icon-left w-full">
-          <i class="pi pi-lock text-slate-400"></i>
-          <input
-            pInputText
-            type="password"
-            id="senha"
-            name="senha"
-            [(ngModel)]="senha"
-            #senhaInput="ngModel"
-            required
-            placeholder="Ex: admin"
-            class="w-full"
-            [class.ng-invalid]="submetido() && senhaInput.invalid"
-            [class.ng-dirty]="submetido() && senhaInput.invalid"
-            [disabled]="carregando()"
-            autocomplete="current-password"
-          />
-        </span>
-        @if (submetido() && senhaInput.invalid) {
-          <small class="text-red-500 font-medium text-xs">Informe a senha.</small>
-        }
-      </div>
+    @if (!modoCadastro()) {
+      <form #loginForm="ngForm" (ngSubmit)="entrar(loginForm)" class="flex flex-column gap-4" novalidate>
+        
+        <div class="flex flex-column gap-2">
+          <label for="email" class="font-semibold text-slate-700 text-sm">E-mail ou UsuÃ¡rio *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope text-slate-400"></i>
+            <input
+              pInputText
+              type="text"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              #emailInput="ngModel"
+              required
+              placeholder="Ex: tiago@dominio.com ou tiago"
+              class="w-full"
+              [class.ng-invalid]="submetido() && emailInput.invalid"
+              [class.ng-dirty]="submetido() && emailInput.invalid"
+              [disabled]="carregando()"
+              autocomplete="username"
+            />
+          </span>
+          @if (submetido() && emailInput.invalid) {
+            <small class="text-red-500 font-medium text-xs">Informe o e-mail ou usuÃ¡rio.</small>
+          }
+        </div>
 
-      <p-button
-        type="submit"
-        [label]="carregando() ? 'Entrando...' : 'Entrar'"
-        [icon]="carregando() ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'"
-        styleClass="w-full mt-2"
-        [loading]="carregando()"
-        [disabled]="carregando()"
-      ></p-button>
+        <div class="flex flex-column gap-2">
+          <label for="senha" class="font-semibold text-slate-700 text-sm">Senha *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-slate-400"></i>
+            <input
+              pInputText
+              type="password"
+              id="senha"
+              name="senha"
+              [(ngModel)]="senha"
+              #senhaInput="ngModel"
+              required
+              placeholder="Digite sua senha"
+              class="w-full"
+              [class.ng-invalid]="submetido() && senhaInput.invalid"
+              [class.ng-dirty]="submetido() && senhaInput.invalid"
+              [disabled]="carregando()"
+              autocomplete="current-password"
+            />
+          </span>
+          @if (submetido() && senhaInput.invalid) {
+            <small class="text-red-500 font-medium text-xs">Informe a senha.</small>
+          }
+        </div>
 
-    </form>
+        <p-button
+          type="submit"
+          [label]="carregando() ? 'Entrando...' : 'Entrar'"
+          [icon]="carregando() ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'"
+          styleClass="w-full mt-2"
+          [loading]="carregando()"
+          [disabled]="carregando()"
+        ></p-button>
 
-    <div class="mt-4 text-center">
-      <span class="text-xs text-slate-400">
-        Credenciais padrão: <strong>admin@example.com</strong> / <strong>admin</strong>
-      </span>
-    </div>
+        <div class="text-center mt-3">
+          <button 
+            type="button" 
+            (click)="alternarModo()" 
+            class="p-button-link text-blue-600 font-semibold cursor-pointer border-none bg-transparent hover:underline text-sm">
+            NÃ£o tem uma conta? Cadastre-se
+          </button>
+        </div>
+
+      </form>
+    }
+
+    @if (modoCadastro()) {
+      <form #cadastroForm="ngForm" (ngSubmit)="cadastrar(cadastroForm)" class="flex flex-column gap-4" novalidate>
+        
+        <div class="flex flex-column gap-2">
+          <label for="novoUsername" class="font-semibold text-slate-700 text-sm">Nome de UsuÃ¡rio *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user text-slate-400"></i>
+            <input
+              pInputText
+              type="text"
+              id="novoUsername"
+              name="novoUsername"
+              [(ngModel)]="novoUsername"
+              #novoUserInput="ngModel"
+              required
+              minlength="3"
+              placeholder="Ex: tiago"
+              class="w-full"
+              [class.ng-invalid]="submetido() && novoUserInput.invalid"
+              [class.ng-dirty]="submetido() && novoUserInput.invalid"
+              [disabled]="carregando()"
+            />
+          </span>
+          @if (submetido() && novoUserInput.invalid) {
+            <small class="text-red-500 font-medium text-xs">MÃ­nimo de 3 caracteres.</small>
+          }
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <label for="novoEmail" class="font-semibold text-slate-700 text-sm">E-mail *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-envelope text-slate-400"></i>
+            <input
+              pInputText
+              type="email"
+              id="novoEmail"
+              name="novoEmail"
+              [(ngModel)]="novoEmail"
+              #novoEmailInput="ngModel"
+              required
+              email
+              placeholder="Ex: tiago@dominio.com"
+              class="w-full"
+              [class.ng-invalid]="submetido() && novoEmailInput.invalid"
+              [class.ng-dirty]="submetido() && novoEmailInput.invalid"
+              [disabled]="carregando()"
+            />
+          </span>
+          @if (submetido() && novoEmailInput.invalid) {
+            <small class="text-red-500 font-medium text-xs">Informe um e-mail vÃ¡lido.</small>
+          }
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <label for="novaSenha" class="font-semibold text-slate-700 text-sm">Senha *</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-slate-400"></i>
+            <input
+              pInputText
+              type="password"
+              id="novaSenha"
+              name="novaSenha"
+              [(ngModel)]="novaSenha"
+              #novaSenhaInput="ngModel"
+              required
+              minlength="6"
+              placeholder="MÃ­nimo 6 caracteres"
+              class="w-full"
+              [class.ng-invalid]="submetido() && novaSenhaInput.invalid"
+              [class.ng-dirty]="submetido() && novaSenhaInput.invalid"
+              [disabled]="carregando()"
+            />
+          </span>
+          @if (submetido() && novaSenhaInput.invalid) {
+            <small class="text-red-500 font-medium text-xs">Senha deve ter no mÃ­nimo 6 caracteres.</small>
+          }
+        </div>
+
+        <p-button
+          type="submit"
+          [label]="carregando() ? 'Cadastrando...' : 'Criar Conta'"
+          [icon]="carregando() ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'"
+          styleClass="w-full mt-2 p-button-success"
+          [loading]="carregando()"
+          [disabled]="carregando()"
+        ></p-button>
+
+        <div class="text-center mt-3">
+          <button 
+            type="button" 
+            (click)="alternarModo()" 
+            class="p-button-link text-slate-600 font-semibold cursor-pointer border-none bg-transparent hover:underline text-sm">
+            JÃ¡ tem uma conta? Entrar
+          </button>
+        </div>
+
+      </form>
+    }
 
   </div>
 </div>

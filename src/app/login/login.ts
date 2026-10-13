@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,13 +28,28 @@ export class LoginComponent {
 
   email = '';
   senha = '';
+
+  modoCadastro = signal(false);
+  novoUsername = '';
+  novoEmail = '';
+  novaSenha = '';
+
   submetido = signal(false);
   carregando = signal(false);
   erro = signal<string | null>(null);
+  sucesso = signal<string | null>(null);
+
+  alternarModo(): void {
+    this.modoCadastro.set(!this.modoCadastro());
+    this.erro.set(null);
+    this.sucesso.set(null);
+    this.submetido.set(false);
+  }
 
   entrar(form: NgForm): void {
     this.submetido.set(true);
     this.erro.set(null);
+    this.sucesso.set(null);
 
     if (form.invalid || !this.email.trim() || !this.senha.trim()) {
       return;
@@ -48,7 +63,34 @@ export class LoginComponent {
       },
       error: () => {
         this.carregando.set(false);
-        this.erro.set('E-mail ou senha inválidos. Verifique suas credenciais.');
+        this.erro.set('E-mail ou senha invÃ¡lidos. Verifique suas credenciais.');
+      }
+    });
+  }
+
+  cadastrar(form: NgForm): void {
+    this.submetido.set(true);
+    this.erro.set(null);
+    this.sucesso.set(null);
+
+    if (form.invalid || !this.novoUsername.trim() || !this.novoEmail.trim() || !this.novaSenha.trim()) {
+      return;
+    }
+
+    this.carregando.set(true);
+    this.authService.cadastrar(this.novoUsername.trim(), this.novoEmail.trim(), this.novaSenha.trim()).subscribe({
+      next: () => {
+        this.carregando.set(false);
+        this.sucesso.set('UsuÃ¡rio cadastrado com sucesso! FaÃ§a seu login abaixo.');
+        this.email = this.novoEmail.trim();
+        this.senha = '';
+        this.modoCadastro.set(false);
+        this.submetido.set(false);
+      },
+      error: (err: any) => {
+        this.carregando.set(false);
+        const msg = err.error?.message || 'Erro ao cadastrar usuÃ¡rio. Verifique se o e-mail ou username jÃ¡ existem.';
+        this.erro.set(msg);
       }
     });
   }

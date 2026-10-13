@@ -137,6 +137,14 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  cadastrar(username: string, email: string, pass: string): Observable<any> {
+    return this.http.post(${this.apiUrl}/auth/register, {
+      username: username.trim(),
+      email: email.trim(),
+      password: pass.trim()
+    });
+  }
+
   temPermissao(role: string): boolean {
     return this.usuario()?.permissoes?.includes(role) ?? false;
   }
