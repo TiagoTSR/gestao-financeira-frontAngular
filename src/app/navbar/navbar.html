@@ -1,4 +1,4 @@
-@if (authService.estaAutenticado()) {
+﻿@if (authService.estaAutenticado()) {
 <nav class="navbar">
   <div class="container flex align-items-center justify-content-between">
     
@@ -13,7 +13,7 @@
         <i class="pi pi-bars text-xl"></i>
       </button>
 
-      <a routerLink="/lancamentos" class="navbar-brand flex align-items-center gap-2 no-underline cursor-pointer">
+      <a routerLink="/dashboard" class="navbar-brand flex align-items-center gap-2 no-underline cursor-pointer">
         <i class="pi pi-wallet text-2xl text-white"></i>
         <span class="font-bold text-xl text-white">Gestão Financeira</span>
       </a>
@@ -49,6 +49,12 @@
     <!-- Itens de Navegação com RouterLink -->
     <ul class="navbar-menu-items">
       <li>
+        <a routerLink="/dashboard" routerLinkActive="ativo" (click)="fecharMenu()">
+          <i class="pi pi-chart-bar"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
         <a routerLink="/lancamentos" routerLinkActive="ativo" (click)="fecharMenu()">
           <i class="pi pi-money-bill"></i>
           <span>Lançamentos</span>
@@ -58,6 +64,12 @@
         <a routerLink="/pessoas" routerLinkActive="ativo" (click)="fecharMenu()">
           <i class="pi pi-users"></i>
           <span>Pessoas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/relatorios/lancamentos" routerLinkActive="ativo" (click)="fecharMenu()">
+          <i class="pi pi-file-pdf"></i>
+          <span>Relatórios</span>
         </a>
       </li>
       <li class="item-logout">

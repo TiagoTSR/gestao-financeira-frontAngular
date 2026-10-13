@@ -1,7 +1,7 @@
-import { Endereco } from './endereco.model';
+﻿import { Endereco } from './endereco.model';
 
 export interface Pessoa {
-  id?: number;
+  id?: string | number;
   nome: string;
   ativo: boolean;
   endereco?: Endereco | null;

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -30,7 +30,7 @@ import {
 } from '../../models';
 
 export interface PessoaFormModel {
-  id?: number;
+  id?: string | number;
   nome: string;
   logradouro: string;
   numero: string;
@@ -87,11 +87,11 @@ export class PessoaCadastro implements OnInit {
     const id = this.route.snapshot.params['id'];
     if (id) {
       this.editando.set(true);
-      this.carregarPessoa(+id);
+      this.carregarPessoa(id);
     }
   }
 
-  carregarPessoa(id: number): void {
+  carregarPessoa(id: string | number): void {
     this.pessoaService.buscarPorId(id).subscribe({
       next: (p) => {
         this.pessoa = {
@@ -148,10 +148,11 @@ export class PessoaCadastro implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao atualizar pessoa:', err);
+          const mensagem = err.error?.mensagem || 'Erro ao atualizar dados da pessoa.';
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Erro ao atualizar dados da pessoa.'
+            detail: mensagem
           });
         }
       });
@@ -173,10 +174,11 @@ export class PessoaCadastro implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao criar pessoa:', err);
+          const mensagem = err.error?.mensagem || 'Erro ao cadastrar pessoa.';
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Erro ao cadastrar pessoa.'
+            detail: mensagem
           });
         }
       });

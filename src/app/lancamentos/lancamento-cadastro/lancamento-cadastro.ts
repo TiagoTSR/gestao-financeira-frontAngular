@@ -1,8 +1,7 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 
 // PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
@@ -30,15 +29,16 @@ import {
 } from '../../models';
 
 export interface LancamentoFormModel {
-  id?: number;
+  id?: string;
   tipo: TipoLancamento;
   dataVencimento: Date | null;
   dataPagamento: Date | null;
   descricao: string;
   valor: number | null;
-  categoriaId: number | null;
-  pessoaId: number | null;
+  categoriaId: string | null;
+  pessoaId: string | null;
   observacao: string;
+  totalParcelas?: number;
 }
 
 @Component({
@@ -75,8 +75,8 @@ export class LancamentoCadastro implements OnInit {
     { label: 'Despesa', value: 'DESPESA' },
   ];
 
-  categorias = signal<{ label: string; value: number }[]>([]);
-  pessoas = signal<{ label: string; value: number }[]>([]);
+  categorias = signal<{ label: string; value: string }[]>([]);
+  pessoas = signal<{ label: string; value: string }[]>([]);
 
   lancamento: LancamentoFormModel = {
     tipo: 'DESPESA',
@@ -86,7 +86,8 @@ export class LancamentoCadastro implements OnInit {
     valor: null,
     categoriaId: null,
     pessoaId: null,
-    observacao: ''
+    observacao: '',
+    totalParcelas: 1
   };
 
   editando = signal(false);
@@ -98,7 +99,7 @@ export class LancamentoCadastro implements OnInit {
     const idParam = this.route.snapshot.params['id'];
     if (idParam) {
       this.editando.set(true);
-      this.carregarLancamento(Number(idParam));
+      this.carregarLancamento(idParam);
     }
   }
 
@@ -108,7 +109,7 @@ export class LancamentoCadastro implements OnInit {
         const itens: any[] = Array.isArray(dados) ? dados : (dados?.conteudo || []);
         const formatadas = itens.map(c => ({
           label: c.nome,
-          value: Number(c.id)
+          value: String(c.id)
         }));
         this.categorias.set(formatadas);
       },
@@ -122,7 +123,7 @@ export class LancamentoCadastro implements OnInit {
         const itens: any[] = resultado?.conteudo || (Array.isArray(resultado) ? resultado : []);
         const formatadas = itens.map(p => ({
           label: p.nome,
-          value: Number(p.id)
+          value: String(p.id)
         }));
         this.pessoas.set(formatadas);
       },
@@ -130,23 +131,24 @@ export class LancamentoCadastro implements OnInit {
     });
   }
 
-  carregarLancamento(id: number): void {
+  carregarLancamento(id: string): void {
     this.lancamentoService.buscarPorId(id).subscribe({
       next: (lancamento: any) => {
         this.lancamento = {
-          id: lancamento.id ? Number(lancamento.id) : undefined,
+          id: lancamento.id ? String(lancamento.id) : undefined,
           tipo: lancamento.tipo || 'DESPESA',
           dataVencimento: lancamento.data_vencimento ? new Date(lancamento.data_vencimento + 'T00:00:00') : null,
           dataPagamento: lancamento.data_pagamento ? new Date(lancamento.data_pagamento + 'T00:00:00') : null,
           descricao: lancamento.descricao || '',
           valor: typeof lancamento.valor === 'string' ? parseFloat(lancamento.valor) : lancamento.valor,
           categoriaId: (lancamento.categoria?.id !== undefined && lancamento.categoria?.id !== null)
-            ? Number(lancamento.categoria.id)
-            : (lancamento.categoria_id ? Number(lancamento.categoria_id) : null),
+            ? String(lancamento.categoria.id)
+            : (lancamento.categoria_id ? String(lancamento.categoria_id) : null),
           pessoaId: (lancamento.pessoa?.id !== undefined && lancamento.pessoa?.id !== null)
-            ? Number(lancamento.pessoa.id)
-            : (lancamento.pessoa_id ? Number(lancamento.pessoa_id) : null),
-          observacao: lancamento.observacao || ''
+            ? String(lancamento.pessoa.id)
+            : (lancamento.pessoa_id ? String(lancamento.pessoa_id) : null),
+          observacao: lancamento.observacao || '',
+          totalParcelas: lancamento.total_parcelas || 1
         };
       },
       error: (err) => console.error('Erro ao carregar lançamento:', err)
@@ -203,10 +205,11 @@ export class LancamentoCadastro implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao atualizar lançamento:', err);
+          const mensagem = err.error?.mensagem || 'Erro ao atualizar o lançamento.';
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Erro ao atualizar o lançamento.'
+            detail: mensagem
           });
         }
       });
@@ -219,7 +222,8 @@ export class LancamentoCadastro implements OnInit {
         observacao: dados.observacao || null,
         tipo: dados.tipo,
         categoria_id: dados.categoriaId,
-        pessoa_id: dados.pessoaId
+        pessoa_id: dados.pessoaId,
+        ...(dados.totalParcelas && dados.totalParcelas > 1 ? { total_parcelas: dados.totalParcelas } : {})
       };
 
       this.lancamentoService.criar(req).subscribe({
@@ -233,10 +237,11 @@ export class LancamentoCadastro implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao criar lançamento:', err);
+          const mensagem = err.error?.mensagem || 'Erro ao salvar o lançamento.';
           this.messageService.add({
             severity: 'error',
             summary: 'Erro',
-            detail: 'Erro ao salvar o lançamento.'
+            detail: mensagem
           });
         }
       });
@@ -256,7 +261,8 @@ export class LancamentoCadastro implements OnInit {
       valor: null,
       categoriaId: null,
       pessoaId: null,
-      observacao: ''
+      observacao: '',
+      totalParcelas: 1
     };
     this.router.navigate(['/lancamentos/novo']);
   }

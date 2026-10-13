@@ -1,10 +1,11 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   Lancamento,
   CriarLancamentoRequest,
   AtualizarLancamentoRequest,
+  LancamentoBaixaRequest,
   LancamentoFilter,
   PageRequest,
   PageResult
@@ -15,7 +16,7 @@ import {
 })
 export class LancamentoService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/lancamentos';
+  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/lancamentos';
 
   listar(filtro?: LancamentoFilter, paginacao?: PageRequest): Observable<PageResult<Lancamento>> {
     let params = new HttpParams();
@@ -28,6 +29,9 @@ export class LancamentoService {
     }
     if (filtro?.data_vencimento_ate) {
       params = params.set('data_vencimento_ate', filtro.data_vencimento_ate);
+    }
+    if (filtro?.status) {
+      params = params.set('status', filtro.status);
     }
     if (filtro?.categoria_id) {
       params = params.set('categoria_id', filtro.categoria_id.toString());
@@ -51,7 +55,7 @@ export class LancamentoService {
     return this.http.get<PageResult<Lancamento>>(this.apiUrl, { params });
   }
 
-  buscarPorId(id: number): Observable<Lancamento> {
+  buscarPorId(id: string | number): Observable<Lancamento> {
     return this.http.get<Lancamento>(`${this.apiUrl}/${id}`);
   }
 
@@ -59,11 +63,23 @@ export class LancamentoService {
     return this.http.post<Lancamento>(this.apiUrl, lancamento);
   }
 
-  atualizar(id: number, lancamento: AtualizarLancamentoRequest): Observable<Lancamento> {
+  atualizar(id: string | number, lancamento: AtualizarLancamentoRequest): Observable<Lancamento> {
     return this.http.put<Lancamento>(`${this.apiUrl}/${id}`, lancamento);
   }
 
-  remover(id: number): Observable<void> {
+  remover(id: string | number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  quitar(id: string | number, baixa?: LancamentoBaixaRequest): Observable<Lancamento> {
+    return this.http.patch<Lancamento>(`${this.apiUrl}/${id}/quitar`, baixa || {});
+  }
+
+  cancelar(id: string | number): Observable<Lancamento> {
+    return this.http.patch<Lancamento>(`${this.apiUrl}/${id}/cancelar`, {});
+  }
+
+  reabrir(id: string | number): Observable<Lancamento> {
+    return this.http.patch<Lancamento>(`${this.apiUrl}/${id}/reabrir`, {});
   }
 }

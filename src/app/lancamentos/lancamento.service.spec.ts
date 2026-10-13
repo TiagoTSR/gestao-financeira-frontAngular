@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+﻿import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -56,7 +56,7 @@ describe('LancamentoService', () => {
     });
 
     const req = httpTesting.expectOne((request) =>
-      request.url === 'http://localhost:8080/lancamentos' &&
+      request.url === 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/lancamentos' &&
       request.params.get('descricao') === 'Supermercado' &&
       request.params.get('pagina') === '0' &&
       request.params.get('tamanho') === '5'
@@ -80,7 +80,7 @@ describe('LancamentoService', () => {
       expect(lancamento).toEqual(mockLancamento);
     });
 
-    const req = httpTesting.expectOne('http://localhost:8080/lancamentos/1');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/lancamentos/1');
     expect(req.request.method).toBe('GET');
     req.flush(mockLancamento);
   });
@@ -88,7 +88,7 @@ describe('LancamentoService', () => {
   it('deve remover lançamento (DELETE /lancamentos/1)', () => {
     service.remover(1).subscribe();
 
-    const req = httpTesting.expectOne('http://localhost:8080/lancamentos/1');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/lancamentos/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });

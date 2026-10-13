@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+﻿import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
@@ -72,7 +72,7 @@ describe('AuthService', () => {
 
     service.logout();
 
-    const req = httpMock.expectOne('http://localhost:8080/auth/logout');
+    const req = httpMock.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/auth/logout');
     expect(req.request.method).toBe('POST');
     req.flush({});
 

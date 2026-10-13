@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
@@ -15,7 +15,7 @@ import {
 })
 export class PessoaService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/pessoas';
+  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/pessoas';
 
   listar(filtro?: PessoaFilter, paginacao?: PageRequest): Observable<PageResult<Pessoa>> {
     let params = new HttpParams();
@@ -47,7 +47,7 @@ export class PessoaService {
     return this.http.get<PageResult<Pessoa>>(this.apiUrl, { params });
   }
 
-  buscarPorId(id: number): Observable<Pessoa> {
+  buscarPorId(id: string | number): Observable<Pessoa> {
     return this.http.get<Pessoa>(`${this.apiUrl}/${id}`);
   }
 
@@ -55,15 +55,15 @@ export class PessoaService {
     return this.http.post<Pessoa>(this.apiUrl, pessoa);
   }
 
-  atualizar(id: number, pessoa: AtualizarPessoaRequest): Observable<Pessoa> {
+  atualizar(id: string | number, pessoa: AtualizarPessoaRequest): Observable<Pessoa> {
     return this.http.put<Pessoa>(`${this.apiUrl}/${id}`, pessoa);
   }
 
-  atualizarAtivo(id: number, ativo: boolean): Observable<void> {
+  atualizarAtivo(id: string | number, ativo: boolean): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}/ativo`, { ativo });
   }
 
-  remover(id: number): Observable<void> {
+  remover(id: string | number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

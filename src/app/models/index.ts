@@ -3,3 +3,4 @@ export * from './endereco.model';
 export * from './pessoa.model';
 export * from './lancamento.model';
 export * from './paginacao.model';
+export * from './dashboard.model';

@@ -1,4 +1,4 @@
-<div class="container py-4">
+﻿<div class="container py-4">
   <div class="surface-card p-4 shadow-1 border-round">
 
     <!-- Cabeçalho da Página -->
@@ -9,7 +9,7 @@
 
     <!-- Formulário de Pesquisa -->
     <form (ngSubmit)="pesquisar(0)" class="grid formgrid p-fluid">
-      <div class="field col-12">
+      <div class="field col-12 md:col-6">
         <label for="descricao" class="font-semibold text-700 block mb-2">Descrição</label>
         <input 
           id="descricao" 
@@ -23,12 +23,28 @@
       </div>
 
       <div class="field col-12 md:col-6">
+        <label for="statusFiltro" class="font-semibold text-700 block mb-2">Status</label>
+        <p-select 
+          id="statusFiltro"
+          [options]="statusOpcoes" 
+          [ngModel]="statusFiltro()" 
+          (ngModelChange)="statusFiltro.set($event)" 
+          name="statusFiltro" 
+          optionLabel="label" 
+          optionValue="value" 
+          placeholder="Todos os Status"
+          class="w-full"
+          styleClass="w-full"
+        ></p-select>
+      </div>
+
+      <div class="field col-12">
         <label class="font-semibold text-700 block mb-2">Vencimento</label>
         <div class="flex align-items-center gap-2">
           <input 
             pInputText 
             type="date" 
-            class="w-full md:w-12rem"
+            class="w-full md:w-14rem"
             [ngModel]="dataVencimentoDe()"
             (ngModelChange)="dataVencimentoDe.set($event)"
             name="vencimentoDe"
@@ -37,7 +53,7 @@
           <input 
             pInputText 
             type="date" 
-            class="w-full md:w-12rem"
+            class="w-full md:w-14rem"
             [ngModel]="dataVencimentoAte()"
             (ngModelChange)="dataVencimentoAte.set($event)"
             name="vencimentoAte"
@@ -69,17 +85,27 @@
           <tr>
             <th>Pessoa</th>
             <th>Descrição</th>
-            <th class="text-center" style="width: 140px">Vencimento</th>
-            <th class="text-center" style="width: 140px">Pagamento</th>
-            <th class="text-right" style="width: 150px">Valor</th>
-            <th class="text-center" style="width: 110px">Ações</th>
+            <th class="text-center" style="width: 130px">Vencimento</th>
+            <th class="text-center" style="width: 130px">Pagamento</th>
+            <th class="text-right" style="width: 140px">Valor</th>
+            <th class="text-center" style="width: 110px">Status</th>
+            <th class="text-center" style="width: 160px">Ações</th>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-lancamento>
           <tr>
             <td>{{ lancamento.pessoa?.nome }}</td>
-            <td>{{ lancamento.descricao }}</td>
+            <td>
+              <div class="flex align-items-center gap-2">
+                <span>{{ lancamento.descricao }}</span>
+                @if (lancamento.total_parcelas > 1) {
+                  <span class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-1 border-round">
+                    {{ lancamento.numero_parcela || 1 }}/{{ lancamento.total_parcelas }}
+                  </span>
+                }
+              </div>
+            </td>
             <td class="text-center">{{ lancamento.data_vencimento | date:'dd/MM/yyyy' }}</td>
             <td class="text-center">{{ (lancamento.data_pagamento | date:'dd/MM/yyyy') || '-' }}</td>
             <td 
@@ -90,7 +116,44 @@
               {{ lancamento.valor | currency:'BRL':'symbol':'1.2-2' }}
             </td>
             <td class="text-center">
+              <p-tag 
+                [value]="obterStatusLabel(lancamento)" 
+                [severity]="obterStatusSeverity(lancamento)" 
+                [rounded]="true"
+              ></p-tag>
+            </td>
+            <td class="text-center">
               <div class="flex justify-content-center gap-1">
+                @if ((lancamento.status || 'PENDENTE') === 'PENDENTE' && !lancamento.data_pagamento) {
+                  <button 
+                    pButton 
+                    (click)="quitar(lancamento)"
+                    icon="pi pi-check" 
+                    class="p-button-text p-button-rounded p-button-success p-button-sm" 
+                    pTooltip="Dar Baixa / Quitar"
+                    tooltipPosition="top"
+                  ></button>
+                }
+                @if (lancamento.status === 'PAGO' || lancamento.status === 'RECEBIDO' || lancamento.data_pagamento) {
+                  <button 
+                    pButton 
+                    (click)="reabrir(lancamento)"
+                    icon="pi pi-replay" 
+                    class="p-button-text p-button-rounded p-button-warning p-button-sm" 
+                    pTooltip="Reabrir como Pendente"
+                    tooltipPosition="top"
+                  ></button>
+                }
+                @if (lancamento.status !== 'CANCELADO') {
+                  <button 
+                    pButton 
+                    (click)="cancelar(lancamento)"
+                    icon="pi pi-ban" 
+                    class="p-button-text p-button-rounded p-button-secondary p-button-sm" 
+                    pTooltip="Cancelar Lançamento"
+                    tooltipPosition="top"
+                  ></button>
+                }
                 <a 
                   pButton 
                   [routerLink]="['/lancamentos', lancamento.id]"
@@ -114,7 +177,7 @@
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6" class="text-center p-4 text-500 font-medium">
+            <td colspan="7" class="text-center p-4 text-500 font-medium">
               Nenhum lançamento encontrado.
             </td>
           </tr>

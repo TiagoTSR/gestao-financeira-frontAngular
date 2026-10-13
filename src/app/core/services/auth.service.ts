@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+﻿import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, of } from 'rxjs';
@@ -32,7 +32,7 @@ export interface RefreshTokenResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly apiUrl = 'http://localhost:8080';
+  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app';
 
   readonly usuario = signal<UsuarioLogado | null>(null);
   readonly token = signal<string | null>(null);

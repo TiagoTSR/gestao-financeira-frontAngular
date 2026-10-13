@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+﻿import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -41,7 +41,7 @@ describe('CategoriaService', () => {
       expect(categorias.length).toBe(2);
     });
 
-    const req = httpTesting.expectOne('http://localhost:8080/categorias');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias');
     expect(req.request.method).toBe('GET');
     req.flush(mockCategorias);
   });
@@ -53,7 +53,7 @@ describe('CategoriaService', () => {
       expect(categoria).toEqual(mockCategoria);
     });
 
-    const req = httpTesting.expectOne('http://localhost:8080/categorias/1');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias/1');
     expect(req.request.method).toBe('GET');
     req.flush(mockCategoria);
   });
@@ -66,7 +66,7 @@ describe('CategoriaService', () => {
       expect(categoria).toEqual(mockCriada);
     });
 
-    const req = httpTesting.expectOne('http://localhost:8080/categorias');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(novaCategoria);
     req.flush(mockCriada);
@@ -75,7 +75,7 @@ describe('CategoriaService', () => {
   it('deve remover categoria (DELETE /categorias/1)', () => {
     service.remover(1).subscribe();
 
-    const req = httpTesting.expectOne('http://localhost:8080/categorias/1');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });

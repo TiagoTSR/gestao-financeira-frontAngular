@@ -1,0 +1,250 @@
+<div class="dashboard-page">
+  <div class="container py-4">
+
+    <!-- Cabeçalho -->
+    <div class="flex flex-column md:flex-row justify-content-between align-items-start md:align-items-center mb-4 gap-3">
+      <div>
+        <h1 class="text-3xl font-bold text-900 m-0">Visão Geral Financeira</h1>
+        <p class="text-500 m-0 text-sm mt-1">Acompanhamento consolidado de receitas, despesas e fluxo de caixa</p>
+      </div>
+      <div class="flex gap-2">
+        <p-button
+          icon="pi pi-refresh"
+          label="Atualizar"
+          [outlined]="true"
+          size="small"
+          (onClick)="carregar()"
+          [loading]="carregando()"
+        ></p-button>
+        <p-button
+          icon="pi pi-plus"
+          label="Novo Lançamento"
+          size="small"
+          routerLink="/lancamentos/novo"
+        ></p-button>
+      </div>
+    </div>
+
+    <!-- Mensagem de Erro -->
+    @if (erro()) {
+      <div class="p-3 mb-4 border-round-lg bg-red-50 border-1 border-red-200 text-red-700 flex align-items-center justify-content-between">
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-exclamation-circle text-xl"></i>
+          <span>{{ erro() }}</span>
+        </div>
+        <p-button label="Tentar novamente" [text]="true" size="small" (onClick)="carregar()"></p-button>
+      </div>
+    }
+
+    <!-- Alerta de Vencidos -->
+    @if (dashboard() && dashboard()!.quantidadeVencidos > 0) {
+      <div class="p-3 mb-4 border-round-xl bg-orange-50 border-1 border-orange-200 text-orange-800 flex flex-column md:flex-row justify-content-between align-items-start md:align-items-center gap-2">
+        <div class="flex align-items-center gap-2">
+          <i class="pi pi-exclamation-triangle text-xl text-orange-600"></i>
+          <span>
+            Atenção: você possui <strong>{{ dashboard()!.quantidadeVencidos }} lançamento(s) vencido(s)</strong> totalizando
+            <strong>{{ dashboard()!.totalVencido | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong> em aberto.
+          </span>
+        </div>
+        <p-button label="Ver Lançamentos" severity="warn" size="small" [outlined]="true" routerLink="/lancamentos"></p-button>
+      </div>
+    }
+
+    <!-- Cards de Métricas Principais -->
+    <div class="grid">
+      <!-- Receitas -->
+      <div class="col-12 sm:col-6 lg:col-3">
+        <div class="metric-card bg-white p-4 border-round-xl shadow-1 border-1 border-gray-100 flex flex-column gap-2 h-full">
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-500 font-medium text-sm">Receitas do Mês</span>
+            <span class="icon-circle bg-green-50 text-green-600">
+              <i class="pi pi-arrow-up-right text-lg"></i>
+            </span>
+          </div>
+          <span class="text-2xl font-bold text-green-700">
+            {{ carregando() ? '...' : (dashboard()?.totalReceitas | currency:'BRL':'symbol':'1.2-2':'pt-BR') }}
+          </span>
+          <span class="text-xs text-500">Mês de referência</span>
+        </div>
+      </div>
+
+      <!-- Despesas -->
+      <div class="col-12 sm:col-6 lg:col-3">
+        <div class="metric-card bg-white p-4 border-round-xl shadow-1 border-1 border-gray-100 flex flex-column gap-2 h-full">
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-500 font-medium text-sm">Despesas do Mês</span>
+            <span class="icon-circle bg-red-50 text-red-600">
+              <i class="pi pi-arrow-down-left text-lg"></i>
+            </span>
+          </div>
+          <span class="text-2xl font-bold text-red-700">
+            {{ carregando() ? '...' : (dashboard()?.totalDespesas | currency:'BRL':'symbol':'1.2-2':'pt-BR') }}
+          </span>
+          <span class="text-xs text-500">Mês de referência</span>
+        </div>
+      </div>
+
+      <!-- Saldo do Mês -->
+      <div class="col-12 sm:col-6 lg:col-3">
+        <div class="metric-card bg-white p-4 border-round-xl shadow-1 border-1 border-gray-100 flex flex-column gap-2 h-full">
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-500 font-medium text-sm">Resultado do Mês</span>
+            <span class="icon-circle bg-blue-50 text-blue-600">
+              <i class="pi pi-chart-line text-lg"></i>
+            </span>
+          </div>
+          <span class="text-2xl font-bold" [ngClass]="(dashboard()?.saldoMes || 0) >= 0 ? 'text-blue-700' : 'text-red-700'">
+            {{ carregando() ? '...' : (dashboard()?.saldoMes | currency:'BRL':'symbol':'1.2-2':'pt-BR') }}
+          </span>
+          <span class="text-xs text-500">Receitas - Despesas</span>
+        </div>
+      </div>
+
+      <!-- Saldo em Caixa -->
+      <div class="col-12 sm:col-6 lg:col-3">
+        <div class="metric-card bg-white p-4 border-round-xl shadow-1 border-1 border-gray-100 flex flex-column gap-2 h-full">
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-500 font-medium text-sm">Saldo em Caixa</span>
+            <span class="icon-circle bg-indigo-50 text-indigo-600">
+              <i class="pi pi-wallet text-lg"></i>
+            </span>
+          </div>
+          <span class="text-2xl font-bold text-indigo-700">
+            {{ carregando() ? '...' : (dashboard()?.saldoConsolidado | currency:'BRL':'symbol':'1.2-2':'pt-BR') }}
+          </span>
+          <span class="text-xs text-500">Histórico realizado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Linha 2: Categorias e Fluxo Mensal -->
+    <div class="grid mt-2">
+      <!-- Despesas por Categoria -->
+      <div class="col-12 lg:col-6">
+        <div class="p-4 bg-white border-round-xl shadow-1 border-1 border-gray-100 h-full">
+          <h2 class="text-lg font-bold text-900 m-0 mb-3 flex align-items-center gap-2">
+            <i class="pi pi-tags text-primary"></i>
+            Despesas por Categoria
+          </h2>
+
+          @if (dashboard()?.despesasPorCategoria && dashboard()!.despesasPorCategoria.length > 0) {
+            <div class="flex flex-column gap-3">
+              @for (cat of dashboard()!.despesasPorCategoria; track cat.categoria) {
+                <div class="flex flex-column gap-1">
+                  <div class="flex justify-content-between text-sm">
+                    <span class="font-semibold text-700">{{ cat.categoria }}</span>
+                    <span class="text-900 font-bold">
+                      {{ cat.total | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} ({{ cat.percentual }}%)
+                    </span>
+                  </div>
+                  <div class="w-full bg-gray-200 border-round" style="height: 8px;">
+                    <div
+                      class="bg-primary border-round"
+                      [style.width.%]="cat.percentual"
+                      style="height: 100%; transition: width 0.4s ease;"
+                    ></div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-5 text-500 text-sm">
+              <i class="pi pi-info-circle text-2xl block mb-2"></i>
+              Nenhuma despesa registrada para o período.
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Fluxo dos Últimos Meses -->
+      <div class="col-12 lg:col-6">
+        <div class="p-4 bg-white border-round-xl shadow-1 border-1 border-gray-100 h-full">
+          <h2 class="text-lg font-bold text-900 m-0 mb-3 flex align-items-center gap-2">
+            <i class="pi pi-calendar text-primary"></i>
+            Fluxo dos Últimos Meses
+          </h2>
+
+          @if (dashboard()?.fluxoMensal && dashboard()!.fluxoMensal.length > 0) {
+            <div class="flex flex-column gap-2">
+              @for (item of dashboard()!.fluxoMensal; track item.mesAno) {
+                <div class="p-2 border-round-lg border-1 border-gray-100 bg-gray-50 flex justify-content-between align-items-center text-sm">
+                  <span class="font-semibold text-700 capitalize">{{ item.mesNome }}</span>
+                  <div class="flex gap-3">
+                    <span class="text-green-600 font-medium" title="Receitas">
+                      <i class="pi pi-arrow-up text-xs mr-1"></i>
+                      {{ item.receitas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                    </span>
+                    <span class="text-red-600 font-medium" title="Despesas">
+                      <i class="pi pi-arrow-down text-xs mr-1"></i>
+                      {{ item.despesas | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                    </span>
+                    <span
+                      class="font-bold"
+                      [ngClass]="item.saldo >= 0 ? 'text-blue-700' : 'text-red-700'"
+                      title="Saldo do Mês"
+                    >
+                      {{ item.saldo | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-5 text-500 text-sm">
+              <i class="pi pi-calendar-times text-2xl block mb-2"></i>
+              Sem histórico de movimentações.
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Últimos Lançamentos -->
+    <div class="mt-4 p-4 bg-white border-round-xl shadow-1 border-1 border-gray-100">
+      <div class="flex justify-content-between align-items-center mb-3">
+        <h2 class="text-lg font-bold text-900 m-0 flex align-items-center gap-2">
+          <i class="pi pi-history text-primary"></i>
+          Lançamentos Recentes
+        </h2>
+        <a routerLink="/lancamentos" class="text-primary font-semibold text-sm no-underline hover:underline cursor-pointer">
+          Ver todos <i class="pi pi-arrow-right text-xs ml-1"></i>
+        </a>
+      </div>
+
+      @if (dashboard()?.ultimosLancamentos && dashboard()!.ultimosLancamentos.length > 0) {
+        <p-table [value]="dashboard()!.ultimosLancamentos" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Descrição</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Pessoa</th>
+              <th>Vencimento</th>
+              <th class="text-right">Valor</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td class="font-medium text-900">{{ item.descricao }}</td>
+              <td>
+                <p-tag
+                  [value]="item.tipo === 'RECEITA' ? 'Receita' : 'Despesa'"
+                  [severity]="item.tipo === 'RECEITA' ? 'success' : 'danger'"
+                ></p-tag>
+              </td>
+              <td class="text-600">{{ item.categoria?.nome || '-' }}</td>
+              <td class="text-600">{{ item.pessoa?.nome || '-' }}</td>
+              <td class="text-600">{{ item.data_vencimento | date:'dd/MM/yyyy':'UTC' }}</td>
+              <td class="text-right font-bold" [ngClass]="item.tipo === 'RECEITA' ? 'text-green-600' : 'text-red-600'">
+                {{ item.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      } @else {
+        <div class="text-center py-4 text-500 text-sm">Nenhum lançamento recente encontrado.</div>
+      }
+    </div>
+
+  </div>
+</div>

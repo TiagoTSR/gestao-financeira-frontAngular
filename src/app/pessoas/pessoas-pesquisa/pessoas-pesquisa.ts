@@ -68,10 +68,11 @@ export class PessoasPesquisa implements OnInit {
       error: (err) => {
         console.error('Erro ao listar pessoas:', err);
         this.carregando.set(false);
+        const mensagem = err.error?.mensagem || 'Não foi possível carregar a lista de pessoas.';
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Não foi possível carregar a lista de pessoas.'
+          detail: mensagem
         });
       }
     });
@@ -100,10 +101,11 @@ export class PessoasPesquisa implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao alterar status:', err);
+        const mensagem = err.error?.mensagem || 'Erro ao alterar o status da pessoa.';
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
-          detail: 'Erro ao alterar o status da pessoa.'
+          detail: mensagem
         });
       }
     });
@@ -131,10 +133,11 @@ export class PessoasPesquisa implements OnInit {
           },
           error: (err) => {
             console.error('Erro ao excluir pessoa:', err);
+            const mensagem = err.error?.mensagem || 'Ocorreu um erro ao excluir a pessoa.';
             this.messageService.add({
               severity: 'error',
               summary: 'Erro',
-              detail: 'Ocorreu um erro ao excluir a pessoa.'
+              detail: mensagem
             });
           }
         });

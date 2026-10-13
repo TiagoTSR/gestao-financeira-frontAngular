@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+﻿import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -47,7 +47,7 @@ describe('PessoaService', () => {
     });
 
     const req = httpTesting.expectOne((request) =>
-      request.url === 'http://localhost:8080/pessoas' &&
+      request.url === 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/pessoas' &&
       request.params.get('nome') === 'Silva' &&
       request.params.get('ativo') === 'true' &&
       request.params.get('pagina') === '0' &&
@@ -60,7 +60,7 @@ describe('PessoaService', () => {
   it('deve alternar status ativo (PUT /pessoas/1/ativo)', () => {
     service.atualizarAtivo(1, false).subscribe();
 
-    const req = httpTesting.expectOne('http://localhost:8080/pessoas/1/ativo');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/pessoas/1/ativo');
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ ativo: false });
     req.flush(null);
@@ -69,7 +69,7 @@ describe('PessoaService', () => {
   it('deve remover pessoa (DELETE /pessoas/1)', () => {
     service.remover(1).subscribe();
 
-    const req = httpTesting.expectOne('http://localhost:8080/pessoas/1');
+    const req = httpTesting.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/pessoas/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });

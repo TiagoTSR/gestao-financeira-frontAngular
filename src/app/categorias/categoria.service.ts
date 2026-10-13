@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
@@ -12,13 +12,13 @@ import {
 })
 export class CategoriaService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/categorias';
+  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias';
 
   listar(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(this.apiUrl);
   }
 
-  buscarPorId(id: number): Observable<Categoria> {
+  buscarPorId(id: string | number): Observable<Categoria> {
     return this.http.get<Categoria>(`${this.apiUrl}/${id}`);
   }
 
@@ -26,11 +26,11 @@ export class CategoriaService {
     return this.http.post<Categoria>(this.apiUrl, categoria);
   }
 
-  atualizar(id: number, categoria: AtualizarCategoriaRequest): Observable<Categoria> {
+  atualizar(id: string | number, categoria: AtualizarCategoriaRequest): Observable<Categoria> {
     return this.http.put<Categoria>(`${this.apiUrl}/${id}`, categoria);
   }
 
-  remover(id: number): Observable<void> {
+  remover(id: string | number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
