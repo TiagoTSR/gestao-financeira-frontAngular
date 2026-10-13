@@ -1,11 +1,11 @@
-﻿<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
+<div class="login-wrapper flex align-items-center justify-content-center min-h-screen px-3 py-6">
   <div class="login-card surface-card p-5 shadow-2 border-round w-full sm:w-30rem">
     
     <div class="text-center mb-5">
       <div class="inline-flex align-items-center justify-content-center bg-blue-100 border-circle w-4rem h-4rem mb-3">
         <i class="pi pi-wallet text-blue-600 text-3xl"></i>
       </div>
-      <h1 class="text-900 font-bold text-2xl mb-2">GestÃ£o Financeira</h1>
+      <h1 class="text-900 font-bold text-2xl mb-2">Gest&atilde;o Financeira</h1>
       <p class="text-600 font-medium text-sm">
         @if (modoCadastro()) {
           Preencha os dados para criar sua conta
@@ -33,7 +33,7 @@
       <form #loginForm="ngForm" (ngSubmit)="entrar(loginForm)" class="flex flex-column gap-4" novalidate>
         
         <div class="flex flex-column gap-2">
-          <label for="email" class="font-semibold text-slate-700 text-sm">E-mail ou UsuÃ¡rio *</label>
+          <label for="email" class="font-semibold text-slate-700 text-sm">E-mail ou Usu&aacute;rio *</label>
           <span class="p-input-icon-left w-full">
             <i class="pi pi-envelope text-slate-400"></i>
             <input
@@ -53,7 +53,7 @@
             />
           </span>
           @if (submetido() && emailInput.invalid) {
-            <small class="text-red-500 font-medium text-xs">Informe o e-mail ou usuÃ¡rio.</small>
+            <small class="text-red-500 font-medium text-xs">Informe o e-mail ou usu&aacute;rio.</small>
           }
         </div>
 
@@ -96,7 +96,7 @@
             type="button" 
             (click)="alternarModo()" 
             class="p-button-link text-blue-600 font-semibold cursor-pointer border-none bg-transparent hover:underline text-sm">
-            NÃ£o tem uma conta? Cadastre-se
+            N&atilde;o tem uma conta? Cadastre-se
           </button>
         </div>
 
@@ -107,7 +107,7 @@
       <form #cadastroForm="ngForm" (ngSubmit)="cadastrar(cadastroForm)" class="flex flex-column gap-4" novalidate>
         
         <div class="flex flex-column gap-2">
-          <label for="novoUsername" class="font-semibold text-slate-700 text-sm">Nome de UsuÃ¡rio *</label>
+          <label for="novoUsername" class="font-semibold text-slate-700 text-sm">Nome de Usu&aacute;rio *</label>
           <span class="p-input-icon-left w-full">
             <i class="pi pi-user text-slate-400"></i>
             <input
@@ -127,7 +127,7 @@
             />
           </span>
           @if (submetido() && novoUserInput.invalid) {
-            <small class="text-red-500 font-medium text-xs">MÃ­nimo de 3 caracteres.</small>
+            <small class="text-red-500 font-medium text-xs">M&iacute;nimo de 3 caracteres.</small>
           }
         </div>
 
@@ -152,7 +152,7 @@
             />
           </span>
           @if (submetido() && novoEmailInput.invalid) {
-            <small class="text-red-500 font-medium text-xs">Informe um e-mail vÃ¡lido.</small>
+            <small class="text-red-500 font-medium text-xs">Informe um e-mail v&aacute;lido.</small>
           }
         </div>
 
@@ -169,7 +169,7 @@
               #novaSenhaInput="ngModel"
               required
               minlength="6"
-              placeholder="MÃ­nimo 6 caracteres"
+              placeholder="M&iacute;nimo 6 caracteres"
               class="w-full"
               [class.ng-invalid]="submetido() && novaSenhaInput.invalid"
               [class.ng-dirty]="submetido() && novaSenhaInput.invalid"
@@ -177,7 +177,7 @@
             />
           </span>
           @if (submetido() && novaSenhaInput.invalid) {
-            <small class="text-red-500 font-medium text-xs">Senha deve ter no mÃ­nimo 6 caracteres.</small>
+            <small class="text-red-500 font-medium text-xs">Senha deve ter no m&iacute;nimo 6 caracteres.</small>
           }
         </div>
 
@@ -195,7 +195,7 @@
             type="button" 
             (click)="alternarModo()" 
             class="p-button-link text-slate-600 font-semibold cursor-pointer border-none bg-transparent hover:underline text-sm">
-            JÃ¡ tem uma conta? Entrar
+            J&aacute; tem uma conta? Entrar
           </button>
         </div>
 
