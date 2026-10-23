@@ -1,4 +1,5 @@
-﻿import { Injectable, inject, signal, computed } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, of } from 'rxjs';
@@ -32,13 +33,13 @@ export interface RefreshTokenResponse {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app';
+  private readonly apiUrl = environment.apiUrl;
 
   readonly usuario = signal<UsuarioLogado | null>(null);
   readonly token = signal<string | null>(null);
   readonly refreshToken = signal<string | null>(null);
   readonly estaAutenticado = computed(() => !!this.token() && !!this.usuario());
-  readonly nomeUsuario = computed(() => this.usuario()?.nome || this.usuario()?.email || 'Usuário');
+  readonly nomeUsuario = computed(() => this.usuario()?.nome || this.usuario()?.email || 'UsuÃ¡rio');
 
   constructor() {
     this.carregarSessao();
