@@ -1,4 +1,5 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DashboardResumo } from '../models';
@@ -8,7 +9,7 @@ import { DashboardResumo } from '../models';
 })
 export class DashboardService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/dashboard';
+  private readonly apiUrl = `${environment.apiUrl}/dashboard`;
 
   obterDashboard(mes?: string): Observable<DashboardResumo> {
     let params = new HttpParams();

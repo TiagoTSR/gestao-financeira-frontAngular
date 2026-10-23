@@ -1,4 +1,5 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
@@ -16,7 +17,7 @@ import {
 })
 export class LancamentoService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/lancamentos';
+  private readonly apiUrl = `${environment.apiUrl}/lancamentos`;
 
   listar(filtro?: LancamentoFilter, paginacao?: PageRequest): Observable<PageResult<Lancamento>> {
     let params = new HttpParams();

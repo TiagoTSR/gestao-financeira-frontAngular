@@ -1,4 +1,5 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
@@ -12,7 +13,7 @@ import {
 })
 export class CategoriaService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/categorias';
+  private readonly apiUrl = `${environment.apiUrl}/categorias`;
 
   listar(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(this.apiUrl);
