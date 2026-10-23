@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app'
+  apiUrl: 'http://localhost:8080'
 };
