@@ -59,36 +59,24 @@
 
         <div class="flex flex-column gap-2">
           <label for="senha" class="font-semibold text-slate-700 text-sm">Senha *</label>
-          <div class="password-input-wrapper">
-            <span class="p-input-icon-left w-full">
-              <i class="pi pi-lock text-slate-400"></i>
-              <input
-                pInputText
-                [type]="mostrarSenha() ? 'text' : 'password'"
-                id="senha"
-                name="senha"
-                [(ngModel)]="senha"
-                #senhaInput="ngModel"
-                required
-                placeholder="Digite sua senha"
-                class="w-full"
-                [class.ng-invalid]="submetido() && senhaInput.invalid"
-                [class.ng-dirty]="submetido() && senhaInput.invalid"
-                [disabled]="carregando()"
-                autocomplete="current-password"
-                style="padding-right: 2.75rem;"
-              />
-            </span>
-            <button
-              type="button"
-              (click)="alternarMostrarSenha()"
-              class="btn-toggle-senha"
-              [attr.aria-label]="mostrarSenha() ? 'Ocultar senha' : 'Ver senha'"
-              tabindex="-1"
-            >
-              <i [class]="mostrarSenha() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-            </button>
-          </div>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-slate-400"></i>
+            <input
+              pInputText
+              type="password"
+              id="senha"
+              name="senha"
+              [(ngModel)]="senha"
+              #senhaInput="ngModel"
+              required
+              placeholder="Digite sua senha"
+              class="w-full"
+              [class.ng-invalid]="submetido() && senhaInput.invalid"
+              [class.ng-dirty]="submetido() && senhaInput.invalid"
+              [disabled]="carregando()"
+              autocomplete="current-password"
+            />
+          </span>
           @if (submetido() && senhaInput.invalid) {
             <small class="text-red-500 font-medium text-xs">Informe a senha.</small>
           }
@@ -170,36 +158,24 @@
 
         <div class="flex flex-column gap-2">
           <label for="novaSenha" class="font-semibold text-slate-700 text-sm">Senha *</label>
-          <div class="password-input-wrapper">
-            <span class="p-input-icon-left w-full">
-              <i class="pi pi-lock text-slate-400"></i>
-              <input
-                pInputText
-                [type]="mostrarNovaSenha() ? 'text' : 'password'"
-                id="novaSenha"
-                name="novaSenha"
-                [(ngModel)]="novaSenha"
-                #novaSenhaInput="ngModel"
-                required
-                minlength="6"
-                placeholder="M&iacute;nimo 6 caracteres"
-                class="w-full"
-                [class.ng-invalid]="submetido() && novaSenhaInput.invalid"
-                [class.ng-dirty]="submetido() && novaSenhaInput.invalid"
-                [disabled]="carregando()"
-                style="padding-right: 2.75rem;"
-              />
-            </span>
-            <button
-              type="button"
-              (click)="alternarMostrarNovaSenha()"
-              class="btn-toggle-senha"
-              [attr.aria-label]="mostrarNovaSenha() ? 'Ocultar senha' : 'Ver senha'"
-              tabindex="-1"
-            >
-              <i [class]="mostrarNovaSenha() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-            </button>
-          </div>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock text-slate-400"></i>
+            <input
+              pInputText
+              type="password"
+              id="novaSenha"
+              name="novaSenha"
+              [(ngModel)]="novaSenha"
+              #novaSenhaInput="ngModel"
+              required
+              minlength="6"
+              placeholder="M&iacute;nimo 6 caracteres"
+              class="w-full"
+              [class.ng-invalid]="submetido() && novaSenhaInput.invalid"
+              [class.ng-dirty]="submetido() && novaSenhaInput.invalid"
+              [disabled]="carregando()"
+            />
+          </span>
           @if (submetido() && novaSenhaInput.invalid) {
             <small class="text-red-500 font-medium text-xs">Senha deve ter no m&iacute;nimo 6 caracteres.</small>
           }

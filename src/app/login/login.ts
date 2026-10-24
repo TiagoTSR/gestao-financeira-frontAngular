@@ -38,24 +38,12 @@ export class LoginComponent {
   carregando = signal(false);
   erro = signal<string | null>(null);
   sucesso = signal<string | null>(null);
-  mostrarSenha = signal(false);
-  mostrarNovaSenha = signal(false);
-
-  alternarMostrarSenha(): void {
-    this.mostrarSenha.update(v => !v);
-  }
-
-  alternarMostrarNovaSenha(): void {
-    this.mostrarNovaSenha.update(v => !v);
-  }
 
   alternarModo(): void {
     this.modoCadastro.set(!this.modoCadastro());
     this.erro.set(null);
     this.sucesso.set(null);
     this.submetido.set(false);
-    this.mostrarSenha.set(false);
-    this.mostrarNovaSenha.set(false);
   }
 
   entrar(form: NgForm): void {
