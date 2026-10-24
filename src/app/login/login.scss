@@ -1,7 +1,77 @@
-﻿.login-wrapper {
+.login-wrapper {
   background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
 }
 
 .login-card {
   background: #ffffff;
+  margin: auto;
+}
+
+/* Fix PrimeNG 18+ input icon left positioning */
+.p-input-icon-left {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  > i:first-child {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    z-index: 2;
+    pointer-events: none;
+    font-size: 1rem;
+  }
+
+  > input.p-inputtext,
+  > input {
+    width: 100%;
+    padding-left: 2.5rem !important;
+  }
+}
+
+/* Password field wrapper with perfectly centered eye toggle button */
+.password-field-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .btn-toggle-senha {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    z-index: 3;
+
+    &:hover {
+      color: #0f172a;
+      background-color: #f1f5f9;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #2563eb;
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
 }
