@@ -1,4 +1,4 @@
-﻿import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -63,7 +63,7 @@ export class LoginComponent {
       },
       error: () => {
         this.carregando.set(false);
-        this.erro.set('E-mail ou senha invÃ¡lidos. Verifique suas credenciais.');
+        this.erro.set('E-mail ou senha inv\u00e1lidos. Verifique suas credenciais.');
       }
     });
   }
@@ -81,7 +81,7 @@ export class LoginComponent {
     this.authService.cadastrar(this.novoUsername.trim(), this.novoEmail.trim(), this.novaSenha.trim()).subscribe({
       next: () => {
         this.carregando.set(false);
-        this.sucesso.set('UsuÃ¡rio cadastrado com sucesso! FaÃ§a seu login abaixo.');
+        this.sucesso.set('Usu\u00e1rio cadastrado com sucesso! Fa\u00e7a seu login abaixo.');
         this.email = this.novoEmail.trim();
         this.senha = '';
         this.modoCadastro.set(false);
@@ -89,7 +89,7 @@ export class LoginComponent {
       },
       error: (err: any) => {
         this.carregando.set(false);
-        const msg = err.error?.message || 'Erro ao cadastrar usuÃ¡rio. Verifique se o e-mail ou username jÃ¡ existem.';
+        const msg = err.error?.message || 'Erro ao cadastrar usu\u00e1rio. Verifique se o e-mail ou username j\u00e1 existem.';
         this.erro.set(msg);
       }
     });

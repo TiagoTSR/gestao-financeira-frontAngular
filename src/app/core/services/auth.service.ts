@@ -39,7 +39,7 @@ export class AuthService {
   readonly token = signal<string | null>(null);
   readonly refreshToken = signal<string | null>(null);
   readonly estaAutenticado = computed(() => !!this.token() && !!this.usuario());
-  readonly nomeUsuario = computed(() => this.usuario()?.nome || this.usuario()?.email || 'UsuÃ¡rio');
+  readonly nomeUsuario = computed(() => this.usuario()?.nome || this.usuario()?.email || 'Usu\u00e1rio');
 
   constructor() {
     this.carregarSessao();
