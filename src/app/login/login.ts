@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { InputTextModule } from 'primeng/inputtext';
@@ -73,9 +74,30 @@ export class LoginComponent {
         this.carregando.set(false);
         this.router.navigate(['/lancamentos']);
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.carregando.set(false);
-        this.erro.set('E-mail ou senha inv\u00e1lidos. Verifique suas credenciais.');
+        if (err.status === 401) {
+          this.erro.set('E-mail ou senha inv\u00e1lidos. Verifique suas credenciais.');
+          return;
+        }
+
+        const apiMessage = err.error?.message;
+        if (typeof apiMessage === 'string' && apiMessage.trim()) {
+          this.erro.set(apiMessage);
+          return;
+        }
+
+        if (err.status === 400 && err.error && typeof err.error === 'object') {
+          const validationMessages = Object.values(err.error)
+            .filter((value): value is string => typeof value === 'string')
+            .filter(value => value !== 'Bad Request');
+          if (validationMessages.length > 0) {
+            this.erro.set(validationMessages.join(' '));
+            return;
+          }
+        }
+
+        this.erro.set('N\u00e3o foi poss\u00edvel autenticar. Tente novamente.');
       }
     });
   }
