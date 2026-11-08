@@ -43,6 +43,17 @@ export class AuthService {
 
   constructor() {
     this.carregarSessao();
+    this.inicializarCsrf();
+  }
+
+  inicializarCsrf(): void {
+    if (typeof document !== 'undefined' && !document.cookie.includes('XSRF-TOKEN=')) {
+      this.http.get(`${this.apiUrl}/auth/csrf`, { withCredentials: true }).subscribe({
+        error: () => {
+          // Falha silenciosa caso a API esteja indisponivel no bootstrap
+        }
+      });
+    }
   }
 
   carregarSessao(): void {

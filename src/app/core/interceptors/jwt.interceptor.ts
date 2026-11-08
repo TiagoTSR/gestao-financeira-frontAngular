@@ -16,9 +16,14 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Não intercepta Authorization nas rotas de autenticação, mas inclui credenciais para cookies HttpOnly e CSRF
+  // Não intercepta Authorization nas rotas de autenticação, mas inclui credenciais e token CSRF se presente
   if (req.url.includes('/login') || req.url.includes('/auth/refresh')) {
-    return next(req.clone({ withCredentials: true }));
+    const authHeaders: Record<string, string> = {};
+    const authXsrf = getXsrfToken();
+    if (authXsrf) {
+      authHeaders['X-XSRF-TOKEN'] = authXsrf;
+    }
+    return next(req.clone({ withCredentials: true, setHeaders: authHeaders }));
   }
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
