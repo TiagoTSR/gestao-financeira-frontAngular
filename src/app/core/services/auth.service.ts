@@ -43,16 +43,13 @@ export class AuthService {
 
   constructor() {
     this.carregarSessao();
-    this.inicializarCsrf();
   }
 
   inicializarCsrf(): void {
-    if (typeof document !== 'undefined' && !document.cookie.includes('XSRF-TOKEN=')) {
-      this.http.get(`${this.apiUrl}/auth/csrf`, { withCredentials: true }).subscribe({
-        error: () => {
-          // Falha silenciosa caso a API esteja indisponivel no bootstrap
-        }
-      });
+    if (typeof window !== 'undefined' && typeof document !== 'undefined' && !document.cookie.includes('XSRF-TOKEN=')) {
+      this.http.get(`${this.apiUrl}/auth/csrf`, { withCredentials: true }).pipe(
+        catchError(() => of(null))
+      ).subscribe();
     }
   }
 
@@ -146,7 +143,7 @@ export class AuthService {
     this.token.set(null);
     this.refreshToken.set(null);
     this.usuario.set(null);
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 
   cadastrar(username: string, email: string, pass: string): Observable<any> {
