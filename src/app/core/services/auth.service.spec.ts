@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { AuthService, LoginResponse } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -34,6 +35,16 @@ describe('AuthService', () => {
   it('deve inicializar desautenticado quando localStorage estiver vazio', () => {
     expect(service.estaAutenticado()).toBe(false);
     expect(service.usuario()).toBeNull();
+  });
+
+  it('deve obter o token CSRF da resposta da API cross-origin', () => {
+    service.inicializarCsrf().subscribe();
+
+    const req = httpMock.expectOne(request => request.url.endsWith('/auth/csrf'));
+    expect(req.request.withCredentials).toBe(true);
+    req.flush({}, { headers: { 'X-XSRF-TOKEN': 'csrf-token' } });
+
+    expect(service.obterTokenCsrf()).toBe('csrf-token');
   });
 
   it('deve autenticar com sucesso no login e salvar credenciais JWT', () => {
@@ -72,7 +83,7 @@ describe('AuthService', () => {
 
     service.logout();
 
-    const req = httpMock.expectOne('https://gestao-financeira-api-hexagonnal-j25-production.up.railway.app/auth/logout');
+    const req = httpMock.expectOne(`${environment.apiUrl}/auth/logout`);
     expect(req.request.method).toBe('POST');
     req.flush({});
 

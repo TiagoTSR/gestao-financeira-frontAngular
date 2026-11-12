@@ -3,6 +3,7 @@ import { HttpClient, provideHttpClient, withInterceptors, HttpHeaders } from '@a
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { jwtInterceptor } from './jwt.interceptor';
+import { AuthService } from '../services/auth.service';
 
 describe('jwtInterceptor', () => {
   let http: HttpClient;
@@ -47,5 +48,20 @@ describe('jwtInterceptor', () => {
     const req = httpMock.expectOne('/categorias');
     expect(req.request.headers.get('Authorization')).toBe(customAuth);
     req.flush([]);
+  });
+
+  it('deve enviar token CSRF em operacoes mutativas cross-origin', () => {
+    const authService = TestBed.inject(AuthService);
+    authService.inicializarCsrf().subscribe();
+
+    const csrfRequest = httpMock.expectOne(request => request.url.endsWith('/auth/csrf'));
+    csrfRequest.flush({}, { headers: { 'X-XSRF-TOKEN': 'csrf-token' } });
+
+    http.post('/categorias', {}).subscribe();
+
+    const request = httpMock.expectOne('/categorias');
+    expect(request.request.headers.get('X-XSRF-TOKEN')).toBe('csrf-token');
+    expect(request.request.withCredentials).toBe(true);
+    request.flush({});
   });
 });

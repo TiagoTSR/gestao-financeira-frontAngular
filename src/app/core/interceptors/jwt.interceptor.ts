@@ -4,14 +4,6 @@ import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-function getXsrfToken(): string | null {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-  const match = document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]+)/);
-  return match ? decodeURIComponent(match[2]) : null;
-}
-
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -19,7 +11,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Não intercepta Authorization nas rotas de autenticação, mas inclui credenciais e token CSRF se presente
   if (req.url.includes('/login') || req.url.includes('/auth/refresh')) {
     const authHeaders: Record<string, string> = {};
-    const authXsrf = getXsrfToken();
+    const authXsrf = authService.obterTokenCsrf();
     if (authXsrf) {
       authHeaders['X-XSRF-TOKEN'] = authXsrf;
     }
@@ -34,7 +26,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   // Anexa o token CSRF em requisições mutativas
-  const xsrfToken = getXsrfToken();
+  const xsrfToken = authService.obterTokenCsrf();
   if (xsrfToken && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method.toUpperCase())) {
     headers['X-XSRF-TOKEN'] = xsrfToken;
   }
@@ -53,7 +45,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
               const retryHeaders: Record<string, string> = {
                 Authorization: `Bearer ${res.access_token}`
               };
-              const retryXsrf = getXsrfToken();
+              const retryXsrf = authService.obterTokenCsrf();
               if (retryXsrf && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method.toUpperCase())) {
                 retryHeaders['X-XSRF-TOKEN'] = retryXsrf;
               }

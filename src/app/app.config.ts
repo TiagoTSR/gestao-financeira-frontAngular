@@ -1,4 +1,4 @@
-import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { AuthService } from './core/services/auth.service';
 
 registerLocaleData(localePt);
 
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([jwtInterceptor])),
+    provideAppInitializer(() => inject(AuthService).inicializarCsrf()),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     MessageService,
     ConfirmationService,

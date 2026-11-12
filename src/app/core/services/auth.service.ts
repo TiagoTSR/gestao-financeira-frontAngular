@@ -2,7 +2,7 @@ import { environment } from '../../../environments/environment';
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, of } from 'rxjs';
+import { Observable, tap, catchError, map, of } from 'rxjs';
 
 export interface UsuarioLogado {
   nome: string;
@@ -38,6 +38,7 @@ export class AuthService {
   readonly usuario = signal<UsuarioLogado | null>(null);
   readonly token = signal<string | null>(null);
   readonly refreshToken = signal<string | null>(null);
+  private readonly csrfToken = signal<string | null>(null);
   readonly estaAutenticado = computed(() => !!this.token() && !!this.usuario());
   readonly nomeUsuario = computed(() => this.usuario()?.nome || this.usuario()?.email || 'Usu\u00e1rio');
 
@@ -45,12 +46,20 @@ export class AuthService {
     this.carregarSessao();
   }
 
-  inicializarCsrf(): void {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined' && !document.cookie.includes('XSRF-TOKEN=')) {
-      this.http.get(`${this.apiUrl}/auth/csrf`, { withCredentials: true }).pipe(
-        catchError(() => of(null))
-      ).subscribe();
-    }
+  inicializarCsrf(): Observable<void> {
+    return this.http.get<void>(`${this.apiUrl}/auth/csrf`, {
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      map((response) => {
+        this.csrfToken.set(response.headers.get('X-XSRF-TOKEN'));
+      }),
+      catchError(() => of(undefined))
+    );
+  }
+
+  obterTokenCsrf(): string | null {
+    return this.csrfToken();
   }
 
   carregarSessao(): void {
